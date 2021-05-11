@@ -22,3 +22,9 @@ struct CA_Configuration_S {
 };
 
 #endif /* INC_COMPONENTS_CHRONOAMPEROMETRY_H_ */
+
+void ChronoAmperometry(struct CA_Configuration_S caConfiguration);
+
+
+
+
