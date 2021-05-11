@@ -63,3 +63,25 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64 C:\Users\Raimonn\Deskt
 
 !ENTRY org.eclipse.cdt.core 1 0 2021-05-11 10:50:23.766
 !MESSAGE Indexed 'masb-pot-s-firmware' (31 sources, 90 headers) in 3,69 sec: 5.079 declarations; 24.965 references; 0 unresolved inclusions; 1 syntax errors; 5 unresolved names (0,017 %)
+!SESSION 2021-05-11 11:08:48.845 -----------------------------------------------
+eclipse.buildId=Version 1.5.1
+java.version=1.8.0_272
+java.vendor=AdoptOpenJDK
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=es_ES
+Framework arguments:  C:\Users\Raimonn\Desktop\CARRERA FULL\4rt\2n semestre\MASB\masb_workspace\masb-pot-s-blaugrana\masb-pot-s-firmware\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 C:\Users\Raimonn\Desktop\CARRERA FULL\4rt\2n semestre\MASB\masb_workspace\masb-pot-s-blaugrana\masb-pot-s-firmware\.project
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2021-05-11 11:09:07.011
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2021-05-11 11:09:07.188
+!MESSAGE Log4j initialized with config file C:\Users\Raimonn\Desktop\CARRERA FULL\4rt\2n semestre\MASB\masb_workspace\masb-pot-s-blaugrana\.metadata\.log4j.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2021-05-11 11:09:21.131
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 4 4 2021-05-11 11:09:23.907
+!MESSAGE com.st.stm32cube.ide.mcu.ide/META-INF/version/build_ref file not found, build reference will not be reported into properties
+
+!ENTRY org.eclipse.cdt.core 1 0 2021-05-11 11:09:28.442
+!MESSAGE Indexed 'masb-pot-s-firmware' (33 sources, 92 headers) in 5,02 sec: 5.855 declarations; 35.687 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0,0048 %)
