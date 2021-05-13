@@ -14,6 +14,7 @@
 #define Rtia	10000
 
 //Prototypes of functions
-struct Data_S ADC_measure(uint32_t count, double samplingPeriod);
+struct Data_S ADC_measure(uint32_t count, uint32_t samplingPeriod);
+void ClockSettings(uint32_t samplingPeriod);
 
 #endif /* INC_COMPONENTS_ADC_H_ */
