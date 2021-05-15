@@ -7,22 +7,39 @@
   ******************************************************************************
   */
 
-#include "components/chronoamperometry.h"
+// Anadimos los archivos header necesarios para el programa
+#include "components/chronoamperometry.h" // donde tenemos definida la crono
+#include "components/masb_comm_s.h" // en este header se detallan los paquetes de comandos que inician y realizan las mediciones
+
+// per configurar el voltatge de la cela
+
+#include "components/mcp4725_driver.h"
+#include "components/i2c_lib.h
 
 // caConfiguration=MASB_COMM_S_getCaConfiguration(void)
 
 void ChronoAmperometry(struct CA_Configuration_S caConfiguration){
+
 	double eDC= caConfiguration.eDC;
 
-	//alguna funcio per fixar el voltatge mitjançant el DAC
+	// eDC es el voltatge constant de la cela electroquimica,
+	// el fixem mitjançant la funcio MCP4725_SetOutputVoltage(hdac, 0.0f)
 
-	//tanquem rele HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, 1(reset);
+	// MCP4725_SetOutputVoltage(eDC, 0.0f); ??????
 
-	uint32_t samplingPeriod=caConfiguration.samplingPeriodMs; //temps entre mostra i mostra
-	uint32_t mTime=caConfiguration.measurementTime; //durada de la crono
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, 1) // (reset) Tanquem rele
 
-	//algo per saber les mesures totals
+	uint32_t samplingPeriod=caConfiguration.samplingPeriodMs; // temps entre mostra i mostra (ms)
+	uint32_t mTime=caConfiguration.measurementTime; // durada de la crono (s)
+
+	// (durada total de la crono) / (temps entre mostres) = quantes mostres hi ha.
+	// COMPTE: Cal passar el Sampling period a segons
+
+	uint8_t measures = mTime/(samplingPeriod/1000) // nombre de mesures
+
+	// CONFIGURAR EL TIMER?
+
+
 
 	//while mesures
 }
-
