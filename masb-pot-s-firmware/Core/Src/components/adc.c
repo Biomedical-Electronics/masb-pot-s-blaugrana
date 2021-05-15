@@ -7,7 +7,7 @@
 
 #include "components/adc.h"
 
-ADC_HandleTypeDef hadc1;
+extern ADC_HandleTypeDef hadc1;
 uint32_t Vadc=0;
 extern TIM_HandleTypeDef htim3;
 uint32_t prescaler=8399; //reduim freq del rellotge a 10KHz
@@ -33,6 +33,7 @@ struct Data_S ADC_measure(uint32_t count, uint32_t samplingPeriod){ //
 
 void ClockSettings (uint32_t samplingPeriod){
 	uint16_t ticks= (84e6/prescaler)*(samplingPeriod/1000); //samplingPeriod esta en ms
+	//84e6 es la frecuencia del internal clock del tim3
 
 	htim3.Instance = TIM3;
 	htim3.Init.Prescaler = prescaler;
@@ -40,6 +41,8 @@ void ClockSettings (uint32_t samplingPeriod){
 	htim3.Init.Period=ticks;
 	htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 	htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+
+	HAL_TIM_Base_Start_IT(&htim3); //inicialitzem timer
 
 }
 
