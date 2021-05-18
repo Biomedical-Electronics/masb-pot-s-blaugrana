@@ -10,6 +10,7 @@
 // Anadimos los archivos header necesarios para el programa
 #include "components/chronoamperometry.h" // donde tenemos definida la crono
 #include "components/masb_comm_s.h" // en este header se detallan los paquetes de comandos que inician y realizan las mediciones
+#include "components/dac.h"
 
 // per configurar el voltatge de la cela
 
@@ -23,9 +24,9 @@ void ChronoAmperometry(struct CA_Configuration_S caConfiguration){
 	double eDC= caConfiguration.eDC;
 
 	// eDC es el voltatge constant de la cela electroquimica,
-	// el fixem mitjançant la funcio MCP4725_SetOutputVoltage(hdac, 0.0f)
+	// el fixem mitjançant la funcio seguent
 
-	// MCP4725_SetOutputVoltage(eDC, 0.0f); ??????
+	MCP4725_SetOutputVoltage(hdac, 1.65-eDC/2);
 
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, 1) // (reset) Tanquem rele
 
@@ -37,9 +38,20 @@ void ChronoAmperometry(struct CA_Configuration_S caConfiguration){
 
 	uint8_t measures = mTime/(samplingPeriod/1000) // nombre de mesures
 
-	// CONFIGURAR EL TIMER?
+	// CONFIGURAR EL TIMER
 
+	ClockSettings(samplingPeriod);
 
+	state = "CA" // s'esta fent la cronoamperometria
+	count = 1 // s'ha fet la primera mesura
 
-	//while mesures
+	while (count <= measures){ // mentre no arribem al nombre total de mesures
+		if (count == measures){ // quan arribem a la mesura final
+			state = "IDLE"; // no fa ni crono ni cv
+		}
+
+		state= "CA";
+	}
+
+	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_0,0); // OBRIM EL RELÉ
 }
