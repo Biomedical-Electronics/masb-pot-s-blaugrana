@@ -15,7 +15,11 @@
 // per configurar el voltatge de la cela
 
 #include "components/mcp4725_driver.h"
-#include "components/i2c_lib.h
+#include "components/i2c_lib.h"
+
+extern uint8_t count;
+extern char state;
+extern MCP4725_Handle_T hdac;
 
 // caConfiguration=MASB_COMM_S_getCaConfiguration(void)
 
@@ -28,7 +32,7 @@ void ChronoAmperometry(struct CA_Configuration_S caConfiguration){
 
 	MCP4725_SetOutputVoltage(hdac, 1.65-eDC/2);
 
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, 1) // (reset) Tanquem rele
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, 1); // (reset) Tanquem rele
 
 	uint32_t samplingPeriod=caConfiguration.samplingPeriodMs; // temps entre mostra i mostra (ms)
 	uint32_t mTime=caConfiguration.measurementTime; // durada de la crono (s)
@@ -36,18 +40,18 @@ void ChronoAmperometry(struct CA_Configuration_S caConfiguration){
 	// (durada total de la crono) / (temps entre mostres) = quantes mostres hi ha.
 	// COMPTE: Cal passar el Sampling period a segons
 
-	uint8_t measures = mTime/(samplingPeriod/1000) // nombre de mesures
+	uint8_t measures = mTime/(samplingPeriod/1000); // nombre de mesures
 
 	// CONFIGURAR EL TIMER
 
 	ClockSettings(samplingPeriod);
 
-	state = "CA" // s'esta fent la cronoamperometria
-	count = 1 // s'ha fet la primera mesura
+	state = "CA";  // s'esta fent la cronoamperometria
+	count = 1;  // s'ha fet la primera mesura
 
-	while (count <= measures){ // mentre no arribem al nombre total de mesures
-		if (count == measures){ // quan arribem a la mesura final
-			state = "IDLE"; // no fa ni crono ni cv
+	while (count <= measures){  // mentre no arribem al nombre total de mesures
+		if (count == measures){  // quan arribem a la mesura final
+			state = "IDLE";  // no fa ni crono ni cv
 		}
 
 		state= "CA";

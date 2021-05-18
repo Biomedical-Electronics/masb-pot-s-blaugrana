@@ -12,7 +12,8 @@
 #include "components/masb_comm_s.h"
 #include "components/chronoamperometry.h"
 #include "components/cyclic_voltammetry.h"
-//#include "components/adc.h"
+#include "components/mcp4725_driver.h"
+#include "components/adc.h"
 //#include "components/dac.h"
 
 struct Handles_S {

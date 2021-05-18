@@ -11,15 +11,20 @@
 struct CV_Configuration_S cvConfiguration;
 struct Data_S data;
 struct CA_Configuration_S caConfiguration;
+char state;
+uint8_t count = 0;
 
 extern ADC_HandleTypeDef hadc1;
 extern I2C_HandleTypeDef hi2c1;
 extern TIM_HandleTypeDef htim3;
-MCP4725_Handle_T hdac = NULL;
+
+extern uint32_t samplingPeriod;
+
+extern MCP4725_Handle_T hdac;
 
 void setup(struct Handles_S *handles) { //pasarle el puntero con la configuración UART, facilidad para cambiar de perifericos
 	MASB_COMM_S_setUart(handles->huart2);
-	setupDAC(MCP4725_Handle_T *newhdac);
+	setup_DAC(hdac);
 	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
 	MASB_COMM_S_waitForMessage();
 
@@ -60,7 +65,8 @@ void loop(void) {
 
 	 			case START_CA_MEAS: // Si hemos recibido START_CA_MEAS
 	 				caConfiguration = MASB_COMM_S_getCaConfiguration();
-	                 // Leemos la configuracion que se nos ha enviado en el mensaje y
+
+	 				// Leemos la configuracion que se nos ha enviado en el mensaje y
 	                 // la guardamos en la variable caConfiguration
 	 				/* Mensaje a enviar desde CoolTerm para hacer comprobacion
 	 				 * eDC = 0.3 V
@@ -129,14 +135,11 @@ void loop(void) {
 	 	// Aqui es donde deberia de ir el codigo de control de las mediciones si se quiere implementar
 	   // el comando de STOP.
 
-
-
-
 	}
 
 void interrupt(void){
 	if (state=="CA"){
-		struct Data_S data=ADC_measure(count,samplingPeriod);
+		struct Data_S data = ADC_measure(count,samplingPeriod);
 		MASB_COMM_S_sendData(data);
 	}
 	count++;

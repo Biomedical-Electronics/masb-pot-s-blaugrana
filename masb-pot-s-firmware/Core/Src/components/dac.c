@@ -9,7 +9,9 @@
 
 MCP4725_Handle_T hdac = NULL;
 
-void setup(MCP4725_Handle_T *newhdac) {
+
+
+void setup_DAC(MCP4725_Handle_T *newhdac) {
 	hdac = newhdac;
 	hdac = MCP4725_Init();
 	MCP4725_ConfigSlaveAddress(hdac, 0x66); // DIRECCION DEL ESCLAVO
