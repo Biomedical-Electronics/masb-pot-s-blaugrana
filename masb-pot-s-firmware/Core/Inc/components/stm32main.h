@@ -26,5 +26,6 @@ struct Handles_S {
 // Prototypes
 void setup(struct Handles_S *handles);
 void loop(void);
+void interrupt(void);
 
 #endif /* INC_COMPONENTS_STM32MAIN_H_ */

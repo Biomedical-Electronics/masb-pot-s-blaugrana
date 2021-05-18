@@ -6,6 +6,7 @@
  */
 
 #include "components/stm32main.h"
+#include "components/masb_comm_s.h"
 
 struct CV_Configuration_S cvConfiguration;
 struct Data_S data;
@@ -14,14 +15,12 @@ struct CA_Configuration_S caConfiguration;
 extern ADC_HandleTypeDef hadc1;
 extern I2C_HandleTypeDef hi2c1;
 extern TIM_HandleTypeDef htim3;
-
+MCP4725_Handle_T hdac = NULL;
 
 void setup(struct Handles_S *handles) { //pasarle el puntero con la configuración UART, facilidad para cambiar de perifericos
-	MASB_COMM_S_setUart(handles->huart);
-
-
-
-
+	MASB_COMM_S_setUart(handles->huart2);
+	setupDAC(MCP4725_Handle_T *newhdac);
+	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
 	MASB_COMM_S_waitForMessage();
 
 }
@@ -77,7 +76,6 @@ void loop(void) {
 	 				__NOP();
 
 	 				ChronoAmperometry(caConfiguration);
-
 	 				break;
 
 
@@ -100,10 +98,10 @@ void loop(void) {
 	                 // lo que se nos indique en los requerimientos del proyecto. Repito, es solo para
 	                 // comprobar que podemos enviar datos del microcontrolador al PC.
 
-	 				data.point = 1;
-	 				data.timeMs = 100;
-	 				data.voltage = 0.23;
-	 				data.current = 12.3e-6;
+	 				//data.point = 1;
+	 				//data.timeMs = 100;
+	 				//data.voltage = 0.23;
+	 				//data.current = 12.3e-6;
 
 	 				/*
 	 				 * Debemos de enviar esto desde CoolTerm (un comando inventado):
@@ -136,3 +134,14 @@ void loop(void) {
 
 	}
 
+void interrupt(void){
+	if (state=="CA"){
+		struct Data_S data=ADC_measure(count,samplingPeriod);
+		MASB_COMM_S_sendData(data);
+	}
+	count++;
+	if (state=="IDLE"){
+		HAL_TIM_Base_Stop_IT(&htim3);
+	}
+
+}
