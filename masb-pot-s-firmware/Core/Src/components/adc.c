@@ -16,7 +16,10 @@ struct Data_S ADC_measure(uint32_t count, uint32_t samplingPeriod){
 	HAL_ADC_Start(&hadc1);
 
 	HAL_ADC_PollForConversion(&hadc1, 100);
-	Vadc=HAL_ADC_GetValue(&hadc1); //conversion tenint en compte (voltatge referencia/4096) ja que opera a 12 bits
+	Vadc=HAL_ADC_GetValue(&hadc1)*3.3/4096; //conversion tenint en compte (voltatge referencia/4096) ja que opera a 12 bits
+
+	HAL_ADC_Start(&hadc1);
+	HAL_ADC_PollForConversion(&hadc1, 100);
 
 	double Vcell= ((1.65-Vadc)*2); //formula per Vcell
 	double Icell= ((Vadc-1.65)*2)/Rtia; //formula per Icell

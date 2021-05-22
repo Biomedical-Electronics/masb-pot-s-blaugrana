@@ -22,11 +22,32 @@ extern uint32_t samplingPeriod;
 
 extern MCP4725_Handle_T hdac;
 
-void setup(struct Handles_S *handles) { //pasarle el puntero con la configuración UART, facilidad para cambiar de perifericos
-	MASB_COMM_S_setUart(handles->huart2);
+void setup(void) { //pasarle el puntero con la configuración UART, facilidad para cambiar de perifericos
+	//MASB_COMM_S_setUart(handles->huart2);
 	setup_DAC(hdac);
+	I2C_Init(&hi2c1);
+
+	AD5280_Handle_T hpot = NULL;
+
+	hpot = AD5280_Init();
+
+	// Configuramos su direccion I2C de esclavo, su resistencia total (hay
+	// diferentes modelos; este tiene 50kohms) e indicamos que funcion queremos que
+	// se encargue de la escritura a traves del I2C. Utilizaremos la funcion
+	// I2C_Write de la libreria i2c_lib.
+	AD5280_ConfigSlaveAddress(hpot, 0x2C);
+	AD5280_ConfigNominalResistorValue(hpot, 50e3f);
+	AD5280_ConfigWriteFunction(hpot, I2C_Write);
+
+	// Fijamos la resistencia de, por ejemplo, 12kohms.
+	AD5280_SetWBResistance(hpot, 12e3f);
+
 	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
+
+
 	MASB_COMM_S_waitForMessage();
+
+
 
 }
 

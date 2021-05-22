@@ -13,6 +13,7 @@
 #include "components/cobs.h"
 
 extern UART_HandleTypeDef huart2;
+//static UART_HandleTypeDef *huart2;
 
 uint8_t rxBuffer[UART_BUFF_SIZE] = { 0 },
 		txBuffer[UART_BUFF_SIZE] = { 0 };

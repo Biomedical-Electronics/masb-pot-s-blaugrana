@@ -14,7 +14,8 @@
 #include "components/cyclic_voltammetry.h"
 #include "components/mcp4725_driver.h"
 #include "components/adc.h"
-//#include "components/dac.h"
+#include "components/dac.h"
+#include "components/ad5280_driver.h"
 
 struct Handles_S {
 	UART_HandleTypeDef *huart2;
@@ -25,7 +26,8 @@ struct Handles_S {
 };
 
 // Prototypes
-void setup(struct Handles_S *handles);
+//void setup(struct Handles_S *handles);
+void setup(void);
 void loop(void);
 void interrupt(void);
 

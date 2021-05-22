@@ -11,6 +11,7 @@
 #include "components/chronoamperometry.h" // donde tenemos definida la crono
 #include "components/masb_comm_s.h" // en este header se detallan los paquetes de comandos que inician y realizan las mediciones
 #include "components/dac.h"
+#include "components/adc.h"
 
 // per configurar el voltatge de la cela
 
