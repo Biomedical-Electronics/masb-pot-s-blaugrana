@@ -40,7 +40,7 @@ void ChronoAmperometry(struct CA_Configuration_S caConfiguration){
 	// (durada total de la crono) / (temps entre mostres) = quantes mostres hi ha.
 	// COMPTE: Cal passar el Sampling period a segons
 
-	uint8_t measures = mTime/(samplingPeriod/1000); // nombre de mesures
+	uint8_t measures = round(mTime/(samplingPeriod/1000)); // nombre de mesures
 
 	// CONFIGURAR EL TIMER
 

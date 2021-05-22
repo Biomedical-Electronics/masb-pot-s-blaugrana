@@ -12,7 +12,7 @@ uint32_t Vadc=0;
 extern TIM_HandleTypeDef htim3;
 uint32_t prescaler=8399; //reduim freq del rellotge a 10KHz
 
-struct Data_S ADC_measure(uint32_t count, uint32_t samplingPeriod){ //
+struct Data_S ADC_measure(uint32_t count, uint32_t samplingPeriod){
 	HAL_ADC_Start(&hadc1);
 
 	HAL_ADC_PollForConversion(&hadc1, 100);
