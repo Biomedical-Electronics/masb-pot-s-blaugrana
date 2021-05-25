@@ -17,6 +17,10 @@
 #include "components/dac.h"
 #include "components/ad5280_driver.h"
 
+#define IDLE 0x00
+#define CV 0x01
+#define CA 0x02
+
 struct Handles_S {
 	UART_HandleTypeDef *huart2;
 	ADC_HandleTypeDef *hadc1;

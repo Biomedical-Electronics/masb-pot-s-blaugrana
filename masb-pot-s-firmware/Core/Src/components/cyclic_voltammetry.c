@@ -12,13 +12,14 @@
 #include "components/dac.h"
 #include "components/adc.h"
 
+#include "components/stm32main.h"
 // per configurar el voltatge de la cela
 
 #include "components/mcp4725_driver.h"
 #include "components/i2c_lib.h"
 
 extern uint8_t count;
-extern char state;
+extern uint8_t state;
 extern double Vcell;
 extern MCP4725_Handle_T hdac;
 
@@ -38,10 +39,10 @@ void CyclicVoltammetry(struct CV_Configuration_S cvConfiguration){
 	ClockSettings(frequency);
 
 	uint8_t count = 1; // inicializamos la voltametria.
-	state = "CV"; // mientras se este ejecutando una Voltametria, el estado sera CV
+	state = CV; // mientras se este ejecutando una Voltametria, el estado sera CV
 
 	while (count <= cycles){ // mientras no hayamos llegado al ultimo ciclo de la voltametria
-		state = "CV";
+		state = CV;
 
 		// Desde ADC llamamos a la variable Vcell, la cual comparamos com Vobjetivo
 		// para ver si ha llegado al vertice 1, vertice 2 o eBegin.
@@ -63,7 +64,7 @@ void CyclicVoltammetry(struct CV_Configuration_S cvConfiguration){
 
 			// ***************** Caso 3: ultimo ciclo *****************
 			else if (count == cycles){
-				state= "IDLE";
+				state= IDLE;
 			}
 
 			// ***************** Caso 4 no es ultim cicle ni eVertex1, eVertex2 *****************

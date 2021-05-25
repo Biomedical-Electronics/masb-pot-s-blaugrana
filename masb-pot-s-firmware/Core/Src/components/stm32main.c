@@ -8,23 +8,25 @@
 #include "components/stm32main.h"
 #include "components/masb_comm_s.h"
 
+
+
 struct CV_Configuration_S cvConfiguration;
 struct Data_S data;
 struct CA_Configuration_S caConfiguration;
-char state;
+volatile uint8_t state;
 uint8_t count = 0;
 
 extern ADC_HandleTypeDef hadc1;
 extern I2C_HandleTypeDef hi2c1;
 extern TIM_HandleTypeDef htim3;
 
-extern uint32_t samplingPeriod;
+uint32_t samplingPeriod;
 
 extern MCP4725_Handle_T hdac;
 
 void setup(void) { //pasarle el puntero con la configuración UART, facilidad para cambiar de perifericos
 	//MASB_COMM_S_setUart(handles->huart2);
-	setup_DAC(hdac);
+	setup_DAC(&hdac);
 	I2C_Init(&hi2c1);
 
 	AD5280_Handle_T hpot = NULL;
@@ -158,13 +160,17 @@ void loop(void) {
 
 	}
 
-void interrupt(void){
-	if (state=="CA"){
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+
+	__NOP();
+
+	if (state==CA){
 		struct Data_S data = ADC_measure(count,samplingPeriod);
 		MASB_COMM_S_sendData(data);
+		count++;
 	}
-	count++;
-	if (state=="IDLE"){
+
+	if (state==IDLE){
 		HAL_TIM_Base_Stop_IT(&htim3);
 	}
 
