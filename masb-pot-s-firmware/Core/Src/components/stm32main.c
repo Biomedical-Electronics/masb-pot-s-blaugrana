@@ -170,6 +170,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		count++;
 	}
 
+	if (state==CV){
+		struct Data_S data = ADC_measure(count,samplingPeriod);
+		MASB_COMM_S_sendData(data);
+		count++;
+	}
+
 	if (state==IDLE){
 		HAL_TIM_Base_Stop_IT(&htim3);
 	}
