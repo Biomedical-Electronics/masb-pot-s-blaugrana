@@ -21,7 +21,7 @@
 
 extern uint8_t count;
 extern uint8_t state;
-extern double Vcell;
+
 extern MCP4725_Handle_T hdac;
 
 const double tol = 1e-6;
@@ -88,12 +88,12 @@ void CyclicVoltammetry(struct CV_Configuration_S cvConfiguration) {
 			if (decimalEquals(vObjetivo, cvConfiguration.eVertex1, tol)) {
 				if ((desiredVcell + eStep) > vObjetivo) { // sumamos eStep y nos pasamos del objetivo, asi que fijamos el objetivo a vcell
 					desiredVcell = vObjetivo;
-					// Formula
-					MCP4725_SetOutputVoltage(hdac, vObjetivo);
+					float desiredVcell_DAC = calculateDacOutputVoltage(vObjetivo);
+					MCP4725_SetOutputVoltage(hdac, desiredVcell_DAC);
 				} else { //si sumamos el eStep y no nos pasamos, definimos de nuevo el voltaje de la celda.
 					desiredVcell += eStep;
-					// Formula
-					MCP4725_SetOutputVoltage(hdac, Vcell + eStep);
+					float desiredVcell_DAC = calculateDacOutputVoltage(desiredVcell);
+					MCP4725_SetOutputVoltage(hdac, desiredVcell_DAC);
 				}
 			}
 
@@ -102,14 +102,14 @@ void CyclicVoltammetry(struct CV_Configuration_S cvConfiguration) {
 			// El vertice dos se encuentra por debajo del vertice 1, así que tendremos que restar el eStep al vcell
 
 			if (decimalEquals(vObjetivo, cvConfiguration.eVertex2, tol)) { //
-				if ((Vcell - eStep) < vObjetivo) { // Restamos eStep y nos pasamos del objetivo (demasiado pequeño), fijamos el vcell
+				if ((desiredVcell - eStep) < vObjetivo) { // Restamos eStep y nos pasamos del objetivo (demasiado pequeño), fijamos el vcell
 					desiredVcell = vObjetivo;
-					// Formula
-					MCP4725_SetOutputVoltage(hdac, vObjetivo);
+					float desiredVcell_DAC = calculateDacOutputVoltage(vObjetivo);
+					MCP4725_SetOutputVoltage(hdac, desiredVcell_DAC);
 				} else { // si restamos eStep y no nos pasamos, definimos de nuevo el voltaje de la celda.
 					desiredVcell -= eStep;
-					// Formuila
-					MCP4725_SetOutputVoltage(hdac, Vcell - eStep);
+					float desiredVcell_DAC = calculateDacOutputVoltage(desiredVcell);
+					MCP4725_SetOutputVoltage(hdac, desiredVcell_DAC);
 				}
 			}
 
@@ -118,14 +118,14 @@ void CyclicVoltammetry(struct CV_Configuration_S cvConfiguration) {
 			// El punto inicial se encuentra entre ambos vertices, por debajo del 1 y encima del 2
 
 			if (decimalEquals(vObjetivo, cvConfiguration.eBegin, tol)) {
-				if ((Vcell + eStep) > vObjetivo) { // sumamos eStep y nos pasamos del objetivo, asi que fijamos el obetivo a vcell
+				if ((desiredVcell + eStep) > vObjetivo) { // sumamos eStep y nos pasamos del objetivo, asi que fijamos el obetivo a vcell
 					desiredVcell = vObjetivo;
-					// Formula
-					MCP4725_SetOutputVoltage(hdac, vObjetivo);
+					float desiredVcell_DAC = calculateDacOutputVoltage(vObjetivo);
+					MCP4725_SetOutputVoltage(hdac, desiredVcell_DAC);
 				} else { //si sumamos el eStep y no nos pasamos, definimos de nuevo el voltaje de la celda.
 					desiredVcell += eStep;
-					// Formula
-					MCP4725_SetOutputVoltage(hdac, Vcell + eStep);
+					float desiredVcell_DAC = calculateDacOutputVoltage(desiredVcell);
+					MCP4725_SetOutputVoltage(hdac, desiredVcell_DAC);
 				}
 			}
 

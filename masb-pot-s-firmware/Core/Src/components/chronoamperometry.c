@@ -33,8 +33,8 @@ void ChronoAmperometry(struct CA_Configuration_S caConfiguration){
 
 	// eDC es el voltatge constant de la cela electroquimica,
 	// el fixem mitjançant la funcio seguent
-
-	MCP4725_SetOutputVoltage(hdac, 1.65-eDC/2);
+	float desiredVcell_DAC = calculateDacOutputVoltage(eDC);
+	MCP4725_SetOutputVoltage(hdac, desiredVcell_DAC);
 
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, 1); // (reset) Tanquem rele
 
