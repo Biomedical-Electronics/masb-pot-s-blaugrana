@@ -9,7 +9,7 @@
 
 const double u2b_m = 8.0 / 3.3;
 const double u2b_b = 4.0;
-const double rTia = 50e-3;
+const double rTia = 50e3;
 
 double calculateVrefVoltage(uint32_t adcValue) {
 

@@ -10,9 +10,9 @@
 
 
 
-struct CV_Configuration_S cvConfiguration;
+volatile struct CV_Configuration_S cvConfiguration;
 struct Data_S data;
-struct CA_Configuration_S caConfiguration;
+volatile struct CA_Configuration_S caConfiguration;
 volatile uint8_t state;
 uint8_t count = 0;
 
@@ -20,14 +20,18 @@ extern ADC_HandleTypeDef hadc1;
 extern I2C_HandleTypeDef hi2c1;
 extern TIM_HandleTypeDef htim3;
 
-uint32_t samplingPeriod;
-double frequency;
+extern uint32_t samplingPeriod;
+extern uint32_t frequency;
+volatile _Bool timeElapsed = FALSE;
+//extern frequency;
 
-extern MCP4725_Handle_T hdac;
 
 void setup(void) { //pasarle el puntero con la configuración UART, facilidad para cambiar de perifericos
 	//MASB_COMM_S_setUart(handles->huart2);
-	setup_DAC(&hdac);
+	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
+	HAL_Delay(500);
+
+	setup_DAC();
 	I2C_init(&hi2c1);
 
 	AD5280_Handle_T hpot = NULL;
@@ -43,9 +47,7 @@ void setup(void) { //pasarle el puntero con la configuración UART, facilidad pa
 	AD5280_ConfigWriteFunction(hpot, I2C_write);
 
 	// Fijamos la resistencia de, por ejemplo, 12kohms.
-	AD5280_SetWBResistance(hpot, 12e3f);
-
-	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
+	AD5280_SetWBResistance(hpot, 50e3f);
 
 
 	MASB_COMM_S_waitForMessage();
@@ -148,7 +150,7 @@ void loop(void) {
 	 				 */
 
 	                // Enviamos los datos
-	 				MASB_COMM_S_sendData(data);
+	 				//MASB_COMM_S_sendData(data);
 
 	 				break;
 
@@ -166,6 +168,8 @@ void loop(void) {
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
+	timeElapsed = TRUE;
+
 	__NOP();
 
 	if (state==CA){
@@ -179,9 +183,4 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		MASB_COMM_S_sendData(data);
 		count++;
 	}
-
-	if (state==IDLE){
-		HAL_TIM_Base_Stop_IT(&htim3);
-	}
-
 }

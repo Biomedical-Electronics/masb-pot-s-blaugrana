@@ -13,7 +13,8 @@
 
 #define MCP4725 0X60 // address of the DAC
 
-void setup_DAC(MCP4725_Handle_T *newhdac);
+void setup_DAC(void);
+void sendVoltage(float voltage);
 
 
 #endif /* INC_COMPONENTS_DAC_H_ */
