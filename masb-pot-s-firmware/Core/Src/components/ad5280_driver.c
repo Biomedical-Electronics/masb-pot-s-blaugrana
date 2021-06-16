@@ -1,4 +1,4 @@
-#include "ad5280_driver.h"
+#include "components/ad5280_driver.h"
 
 struct AD5280_Handle_S {
     uint8_t slaveAddress;

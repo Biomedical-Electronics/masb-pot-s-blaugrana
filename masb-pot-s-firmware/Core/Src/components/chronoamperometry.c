@@ -13,15 +13,15 @@
 #include "components/dac.h"
 #include "components/adc.h"
 #include "components/stm32main.h"
+#include "main.h"
+#include "components/formulas.h"
 
 // per configurar el voltatge de la cela
 
-#include "components/mcp4725_driver.h"
-#include "components/i2c_lib.h"
-
+extern TIM_HandleTypeDef htim3;
 extern uint8_t count;
 extern uint8_t state;
-extern MCP4725_Handle_T hdac;
+uint32_t samplingPeriod;
 
 // caConfiguration=MASB_COMM_S_getCaConfiguration(void)
 
@@ -33,12 +33,11 @@ void ChronoAmperometry(struct CA_Configuration_S caConfiguration){
 
 	// eDC es el voltatge constant de la cela electroquimica,
 	// el fixem mitjançant la funcio seguent
+	sendVoltage(eDC);
 
-	MCP4725_SetOutputVoltage(hdac, 1.65-eDC/2);
+	HAL_GPIO_WritePin(RELAY_GPIO_Port, RELAY_Pin, GPIO_PIN_SET); // (reset) Tanquem rele
 
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, 1); // (reset) Tanquem rele
-
-	uint32_t samplingPeriod=caConfiguration.samplingPeriodMs; // temps entre mostra i mostra (ms)
+    samplingPeriod=caConfiguration.samplingPeriodMs; // temps entre mostra i mostra (ms)
 	uint32_t mTime=caConfiguration.measurementTime; // durada de la crono (s)
 
 	// (durada total de la crono) / (temps entre mostres) = quantes mostres hi ha.
@@ -61,5 +60,6 @@ void ChronoAmperometry(struct CA_Configuration_S caConfiguration){
 		state= CA;
 	}
 
-	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_0,0); // OBRIM EL RELÉ
+	HAL_TIM_Base_Stop_IT(&htim3);
+	HAL_GPIO_WritePin(RELAY_GPIO_Port, RELAY_Pin, GPIO_PIN_RESET); // OBRIM EL RELÉ
 }

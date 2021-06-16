@@ -10,9 +10,9 @@
 
 
 
-struct CV_Configuration_S cvConfiguration;
+volatile struct CV_Configuration_S cvConfiguration;
 struct Data_S data;
-struct CA_Configuration_S caConfiguration;
+volatile struct CA_Configuration_S caConfiguration;
 volatile uint8_t state;
 uint8_t count = 0;
 
@@ -20,14 +20,19 @@ extern ADC_HandleTypeDef hadc1;
 extern I2C_HandleTypeDef hi2c1;
 extern TIM_HandleTypeDef htim3;
 
-uint32_t samplingPeriod;
+extern uint32_t samplingPeriod;
+extern uint32_t frequency;
+volatile _Bool timeElapsed = FALSE;
+//extern frequency;
 
-extern MCP4725_Handle_T hdac;
 
 void setup(void) { //pasarle el puntero con la configuración UART, facilidad para cambiar de perifericos
 	//MASB_COMM_S_setUart(handles->huart2);
-	setup_DAC(&hdac);
-	I2C_Init(&hi2c1);
+	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
+	HAL_Delay(500);
+
+	setup_DAC();
+	I2C_init(&hi2c1);
 
 	AD5280_Handle_T hpot = NULL;
 
@@ -39,12 +44,10 @@ void setup(void) { //pasarle el puntero con la configuración UART, facilidad pa
 	// I2C_Write de la libreria i2c_lib.
 	AD5280_ConfigSlaveAddress(hpot, 0x2C);
 	AD5280_ConfigNominalResistorValue(hpot, 50e3f);
-	AD5280_ConfigWriteFunction(hpot, I2C_Write);
+	AD5280_ConfigWriteFunction(hpot, I2C_write);
 
 	// Fijamos la resistencia de, por ejemplo, 12kohms.
-	AD5280_SetWBResistance(hpot, 12e3f);
-
-	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
+	AD5280_SetWBResistance(hpot, 50e3f);
 
 
 	MASB_COMM_S_waitForMessage();
@@ -78,8 +81,11 @@ void loop(void) {
 	 				 * Mensaje codificado que enviamos desde CoolTerm (incluye ya el termchar):
 	 				 * 0201010101010103D03F010101010103E03F010101010114E0BF027B14AE47E17A843F7B14AE47E17A743F00
 	 				 */
+
 	 				__NOP(); // Esta instruccion no hace nada y solo sirve para poder anadir un breakpoint
 
+	 				CyclicVoltammetry(cvConfiguration);
+	 				break;
 	 				// Aqui iria todo el codigo de gestion de la medicion que hareis en el proyecto
 	                // si no quereis implementar el comando de stop.
 
@@ -144,7 +150,7 @@ void loop(void) {
 	 				 */
 
 	                // Enviamos los datos
-	 				MASB_COMM_S_sendData(data);
+	 				//MASB_COMM_S_sendData(data);
 
 	 				break;
 
@@ -162,6 +168,8 @@ void loop(void) {
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
+	timeElapsed = TRUE;
+
 	__NOP();
 
 	if (state==CA){
@@ -171,13 +179,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	}
 
 	if (state==CV){
-		struct Data_S data = ADC_measure(count,samplingPeriod);
+		struct Data_S data = ADC_measure(count,frequency);
 		MASB_COMM_S_sendData(data);
 		count++;
 	}
-
-	if (state==IDLE){
-		HAL_TIM_Base_Stop_IT(&htim3);
-	}
-
 }
