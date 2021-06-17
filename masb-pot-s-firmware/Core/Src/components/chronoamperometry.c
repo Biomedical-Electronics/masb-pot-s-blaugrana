@@ -18,9 +18,9 @@
 
 // per configurar el voltatge de la cela
 
-extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim3; //timer
 extern uint8_t count;
-extern uint8_t state;
+extern uint8_t state; 
 uint32_t samplingPeriod;
 
 // caConfiguration=MASB_COMM_S_getCaConfiguration(void)
@@ -35,7 +35,7 @@ void ChronoAmperometry(struct CA_Configuration_S caConfiguration){
 	// el fixem mitjançant la funcio seguent
 	sendVoltage(eDC);
 
-	HAL_GPIO_WritePin(RELAY_GPIO_Port, RELAY_Pin, GPIO_PIN_SET); // (reset) Tanquem rele
+	HAL_GPIO_WritePin(RELAY_GPIO_Port, RELAY_Pin, GPIO_PIN_SET); // (set) Tanquem rele
 
     samplingPeriod=caConfiguration.samplingPeriodMs; // temps entre mostra i mostra (ms)
 	uint32_t mTime=caConfiguration.measurementTime; // durada de la crono (s)
@@ -61,5 +61,5 @@ void ChronoAmperometry(struct CA_Configuration_S caConfiguration){
 	}
 
 	HAL_TIM_Base_Stop_IT(&htim3);
-	HAL_GPIO_WritePin(RELAY_GPIO_Port, RELAY_Pin, GPIO_PIN_RESET); // OBRIM EL RELÉ
+	HAL_GPIO_WritePin(RELAY_GPIO_Port, RELAY_Pin, GPIO_PIN_RESET); // reset, OBRIM EL RELÉ
 }
