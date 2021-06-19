@@ -21,10 +21,10 @@
 extern uint8_t count;
 extern volatile uint8_t state;
 extern volatile _Bool timeElapsed;
-extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim3; //timer
 uint32_t frequency;
 
-const double tol = 1e-6;
+const double tol = 1e-6; //tolerancia para determinar si 2 valores son iguales 
 
 _Bool decimalEquals(double num1, double num2, double tolerance) {
 	return fabs(num1 - num2) < tolerance;
@@ -74,7 +74,7 @@ void CyclicVoltammetry(struct CV_Configuration_S cvConfiguration) {
 
 				}
 
-				// ***************** Caso 4 no es ultim cicle ni eVertex1, eVertex2 *****************
+				// ***************** Caso 3: nos encontramos en ebegin *****************
 				else {
 					vObjetivo = cvConfiguration.eVertex1; //siguiente objetivo es vertice 1
 					cycles--;
@@ -129,7 +129,7 @@ void CyclicVoltammetry(struct CV_Configuration_S cvConfiguration) {
 
 	}
 	HAL_TIM_Base_Stop_IT(&htim3);
-	HAL_GPIO_WritePin(RELAY_GPIO_Port, RELAY_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(RELAY_GPIO_Port, RELAY_Pin, GPIO_PIN_RESET); //abrimos rele
 	state = IDLE;
 
 }

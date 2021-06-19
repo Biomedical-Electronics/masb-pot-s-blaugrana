@@ -9,25 +9,25 @@
 #include "components/formulas.h"
 
 uint32_t samplingPeriod;
-extern ADC_HandleTypeDef hadc1;
+extern ADC_HandleTypeDef hadc1; //ADC
 uint32_t Vadc=0;
-extern TIM_HandleTypeDef htim3;
-uint32_t prescaler=8399; //reduim freq del rellotge a 10KHz
+extern TIM_HandleTypeDef htim3; //timer 
+uint32_t prescaler=8399; //reduim freq del rellotge a 10KHz, no ho utilitzem al final
 
 struct Data_S ADC_measure(uint32_t count, uint32_t samplingPeriod){
 	HAL_ADC_Start(&hadc1);
-	HAL_ADC_PollForConversion(&hadc1, 100);
-	uint32_t VadcValue = HAL_ADC_GetValue(&hadc1); //conversion tenint en compte (voltatge referencia/4096) ja que opera a 12 bits
+	HAL_ADC_PollForConversion(&hadc1, 100); //wait
+	uint32_t VadcValue = HAL_ADC_GetValue(&hadc1); //ADC value
 
-	double Vcell= calculateVrefVoltage(VadcValue);
+	double Vcell= calculateVrefVoltage(VadcValue); //conversion tenint en compte (voltatge referencia/4096) ja que opera a 12 bits
 
 	HAL_ADC_Start(&hadc1);
-	HAL_ADC_PollForConversion(&hadc1, 100);
-	VadcValue = HAL_ADC_GetValue(&hadc1); //conversion tenint en compte (voltatge referencia/4096) ja que opera a 12 bits
+	HAL_ADC_PollForConversion(&hadc1, 100); //wait
+	VadcValue = HAL_ADC_GetValue(&hadc1); //ADC value
 
 	double Icell = calculateIcellCurrent(VadcValue); //formula per Icell
 
-	struct Data_S dataPoint; //guardem les mesures per cada count
+	struct Data_S dataPoint; //guardem les mesures per cada count i temps
 	dataPoint.point=count;
 	dataPoint.timeMs= count*samplingPeriod;
 	dataPoint.voltage=Vcell;
