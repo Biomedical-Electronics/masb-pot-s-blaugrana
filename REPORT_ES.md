@@ -2,7 +2,7 @@
 
 <img align="left" src="https://img.shields.io/badge/Entorno de desarrollo-STM32CubeIDE-blue">
 
-Este proyecto ha sido desarrollado en la asignatura de **Microcontroladores  para Aplicaciones y Sistemas Biomédicos** de Ingeniera Biomédica de la Universidad de Barcelona (UB). Ha sido realizado por el grupo **BlauGrana**,  formado por Julia meca (izquierda) y Raimon Casamitjana (derecha), y con la ayuda de su profesor Albert Álvarez. :yum: 
+Este proyecto ha sido desarrollado en la asignatura de **Microcontroladores  para Aplicaciones y Sistemas Biomédicos** de Ingeniera Biomédica de la Universidad de Barcelona (UB). Ha sido realizado por el grupo **BlauGrana**,  formado por Julia meca (izquierda) y Raimon Casamitjana (derecha), y con la ayuda de su profesor Albert Álvarez, a quien le estamos muy agradecidos. :yum: 
 
 <p align="center">
    <img src="assets/imgs/julia.jpg" alt="Julia" width="250" /> 
@@ -35,7 +35,7 @@ En este documento se encuentran los contenidos necesarios para realizar y entend
 
 ## Introducción
 
-Dentro del equipo Blaugrana, Júlia Meca y Raimon Casamitjana han realizado el proyecto documentado en este report. Este se encuentra desarrollado en el marco del último curso de Ingeniería Biomédica, en la asignatura de Microcontroladores para aplicaciones y Sistemas Biomédicos. En pocas palabras, el proyecto se basa en la programación de un potenciostato. Más específicamente, este está formado por un *front-end* propiamente diseñado para su uso en el proyecto, así como un *back-end* compuesto por la placa de evaluación NUCLEO-F410RE de STMelectronics. 
+Dentro del equipo Blaugrana, Júlia Meca y Raimon Casamitjana han realizado el proyecto documentado en este report. Este se encuentra desarrollado en el marco del último curso de Ingeniería Biomédica, en la asignatura de Microcontroladores para aplicaciones y Sistemas Biomédicos. En pocas palabras, el proyecto se basa en la programación de un potenciostato. Más específicamente, este está formado por un *front-end* propiamente diseñado para su uso en el proyecto, así como un *back-end* compuesto por la placa de evaluación **NUCLEO-F410RE de STMelectronics.** 
 
 ### Potenciostato
 
@@ -45,11 +45,17 @@ Los electrodos deben estar en contacto directo con la sustancia a analizar pero 
 
 Respecto a su funcionamiento, el potenciostato se encarga de medir y controlar el potencial de la celda electroquímica, detectando los cambios en su resistencia (R) y variando la intensidad de la corriente administrada (I) al sistema de acuerdo con estas fluctuaciones, consiguiendo que la diferencia de potencial se mantenga constante. 
 
+
+
 ### Cronoamperometría
 
 La cronoamperometría (CA) es un tipo de medición electroquímica. Se basa en someter a un electrodo de trabajo a un cambio de potencial instantáneo comúnmente mediante una señal escalón. De esta forma, se puede estudiar la respuesta de la corriente o intensidad de la celda electroquímica durante el tiempo. 
 
-Esta técnica es usada de forma habitual para la obtención de una actividad determinada de una especie biológica dada la cuantificación de un analito de interés en forma de una señal de intensidad. **ACABAR TMB**
+Esta técnica es usada de forma habitual para la obtención de una actividad determinada de una especie biológica dada la cuantificación de un analito de interés en forma de una señal de intensidad.
+
+ **ACABAR TMB**
+
+
 
 ### Voltamperometría cíclica
 
@@ -98,6 +104,45 @@ En esta sección se explica en más detalle los componentes del *front-end* del 
 
 * **Power Management Unit (PMU)**
 
+  La PMU es la unidad gestora de potencia (alimenta el *front-end*). Por defecto se encuentra deshabilitada y por lo tanto se tiene que activar de inicio. Mediante el microcontrolador deberemos habilitar su alimentación en el pin `EN`, el cual tendrá que tener un estado `HIGH`. 
+
+* **Relé**
+
+  El circuito del *front-end* se encuentra conectado o desconectado de la celda mediante la apertura del relé. Cuando este se encuentra abierto no habrá conexión posible y, por consiguiente, no se toman medidas. Esta es su configuración por defecto. Por lo tanto, cuando una medida quiera tomarse, el relé se deberá cerrar y volver abrirse al final. Su control se encuentra en el pin `RELAY`.
+
+* **Potenciostato**
+
+  Como ya hemos comentado anteriormente, el potenciostato es el encargado de polarizar la celda a una cierta tensión (*Vcell*) para poder leer una corriente (*Icell*). 
+
+  En nuestro caso, la polarización se da mediante un DAC (*Digital to Analog Convertor*) **MCP4725**. Su comunicación se da puede dar con I2C a la dirección `1100000` para determinar el voltaje a fijar. Puede generar una tensión de 0 a 4V. Además, esta señal unipolar se encuentra seguida de una etapa para generar voltajes tanto positivos como negativos, es decir de - 4 a 4 V. Es importante tener en cuenta la fórmula que relaciona la tensión de salida del DAC con la tensión de la celda *Vcell*: 
+
+  <p align="center">
+     <img src="assets/imgs/vdac.jpg" alt="Vdac" width="250" /> 
+
+  
+
+  > **Ecuación 1:** Cálculo de la Vdac.
+
+  Aun así, esta tensión no se puede dar por conocida de forma exacta. Es por esto que mediante el ADC del microcontrolador se puede leer **Vadc**, la cual es medida por el ***reference electrode (RE)*** y que posteriormente es introducida a través de un circuito que convierte la **señal bipolar** en **unipolar** de nuevo. Dada esta consideración, la tensión medida por el ADC y la de la celda se relacionan de la siguiente forma:
+
+  <p align="center">
+     <img src="assets/imgs/vcell.jpg" alt="Vcell" width="320" /> 
+
+  > **Ecuación 2:** Cálculo de la Vcell.
+
+  Por último, la corriente de la celda es medida gracias al uso de un **amplificador de transimpedancia (TIA),** el cual contiene una resistencia de 10 kΩ. En este caso la señal también se convierte en unipolar pasando por un conversor. Por lo tanto, la corriente se define de la siguiente forma:
+
+  <p align="center">
+     <img src="assets/imgs/icell.jpg" alt="Icell" width="300" /> 
+
+  > **Ecuación 3:** Cálculo de la Icell.
+
+  Todas las fórmulas expuestas anteriormente deberán usarse en el programa para poder determinar correctamente los voltajes y las corrientes fijadas y medidas en la celda. 
+
+
+
+​	
+
 ## Git y GitHub
 
 Para realizar proyectos basados en el desarrollo de código en equipo, existen dos herramientas muy útiles: Git y GitHub. **Git** es un sistema de control de versiones (VCS) mientras que **GitHub** es un sitio web que proporciona una infraestructura al servidor Git y da alojamiento a todos sus repositorios, así como diferentes herramientas para trabajar con ellos. 
@@ -110,6 +155,7 @@ Para trabajar de forma más organizada y no sobrescribir los archivos, es común
 
 <p align="center">
    <img src="assets/imgs/branches.jpg" alt="Branches" width="350" /> 
+
 > **Figura 3:** Ejemplo de ramas de desarrollo en un proyecto de Git. 
 
 Una opción comúnmente escogida, es que cada desarrollador cree su propia rama y edite el proyecto general desde esta. En el caso de nuestro proyecto, las distintas ramas han sido creadas según su funcionalidad, es decir, se creó una rama para la cronoamperometría, una rama para la voltametría cíclica, una rama para la comunicación ADC, etc. A continuación, vamos a proceder a describir cada una de estas ramas: 
@@ -215,4 +261,18 @@ Diferentes ficheros han sido necesarios para implementar el proceso de medición
 * `chronoamperometry`: En este fichero se encuentra reflejado, en primer lugar, la obtención de las instrucciones de la medición: voltaje a fijar (`eDC`), el `sampling period`, así como el tiempo total de la medida. También se cierra el relé y se configura el *timer* con el *sampling period* determinado (la función **ClockSettings**, se encuentra definida en otro fichero que comentaremos a continuación). Además, se calculan el número de muestras a realizar, dados el tiempo de la medida y el *sampling period*. De esta forma, iniciamos un bucle con un contador. Se establece una variable "estado" que define qué esta midiendo el sensor, en este caso, se encuentra haciendo una cronoamperometría así que marcará `estado = CA`. Posteriormente veremos que esto es usado por el *timer*. Finalmente, al acabar la medida el relé se abre.
 
 * `adc`: este fichero tiene dos funciones principales, la propia **conversión ADC** para la medición, y la **configuración del *timer*** para que la interrupción se dé según la frecuencia enviada por el usuario. Estas funcionalidades son llamadas y usadas tanto en la cronoamperometría como en la voltametría cíclica. 
-  * `ADC_measure()`: esta función es la encargada de inicializar el ADC para la medición de 
+  * `ADC_measure()`: esta función es la encargada de inicializar el ADC para la medición de **Vcell** y **Icell**. Para ello se debe tener en cuenta los bits del ADC (12, en este caso) así como el voltaje de referencia (3.3 V) para poder determinar los valores medidos. Finalmente, los parámetros medidos juntamente con el punto al que corresponde y el tiempo es guardado en una estructura para ser enviado. 
+  * `ClockSettings()`: esta función se encarga de determinar el periodo de muestreo en el *timer* para que, mediante este, siempre que la interrupción ocurra en el *sampling period* determinado en las instrucciones, se haga una medida. 
+
+* `dac`: en este fichero se encuentran definidas las funciones de *setup* para inicializar el DAC dada su dirección en I2C. También se define la función **sendVoltage(),** en la que se introduce el voltaje a determinar en la celda y que, además, calcula el voltaje a enviar por el DAC para ello. Estas funcionalidades también deberán ser usada y llamadas en la **voltametría cíclica.** 
+
+
+
+#### Voltametría Cíclica
+
+La funcionalidad de la voltametría se encuentra resumida en el diagrama de flujo superior. Igual que con el caso anterior, el uso del fichero ADC como el del DAC son esenciales para medir y fijar los voltajes. En especial para la voltametría, encontramos el fichero de `cyclic_voltammetry`, el cual implementa el flujo de la figura. 
+
+<p align="center">
+   <img src="assets/imgs/CV_flow.jpg" alt="CV Flow Diagram" width="700" /> 
+
+Primero de todo, la obtención de las instrucciones de la medición: voltaje a fijar (eBegin), los distintos vértices de la señal de voltaje, los ciclos a realizar, así como el scanRate (la variación de la tensión en la celda con el tiempo) y el eStep (incrementeo/decremento entre distintos puntos consecutivos). Posteriormente mediante la siguiente formula del periodo de sampleo se determina, para ser introducida en la función **ClockSettings()** previamente comentada para realizar las pertinentes mediciones. El programa se ejecuta siempre y cuando los ciclos a realizar no hayan finalizado (es decir, siempre que los ciclos>0) y cada vez que salte la interrupción dado el periodo de sampleo. Primero se determina si el voltaje ha llegado a uno de los vértices, de ser así, el siguiente objetivo de la señal voltaje a enviar a la celda es el vértice consecutivo. De no haberse llegado al vértice objetivo, un cierto decremento o incremento (dependiendo en qué vértice nos encontremos) es aplicado a la señal voltaje enviada a la celda hasta llegarse a dicho objetivo. En caso de llegarse y pasarse de este, el propio objetivo es aplicado a la celda. Cabe destacar que en este flujo se considera siempre que eVertex2<eBegin<eVertex1 para realizar los pertinentes incrementos y decrementos, por lo tanto distinta configuración a esta no resultaría en buenas medidas. Finalmente, al acabar la medida el relé se abre. Igual que con la cronoamperometría, el estado mientras se realizan las mediciones se define como CV, para que cuando salte la interrupción las pertinentes mediciones de esta técnica se den. Esto se verá en más detalle a continuación con la implementación en el fichero **stm32main.** 

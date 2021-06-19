@@ -107,6 +107,42 @@ This section explains in more detail the components of the *front-end* of the po
 
 * **Power Management Unit (PMU)**
 
+  The PMU is the power management unit (it powers the *front-end*). By default it is disabled and therefore it has to be enabled at startup. By means of the microcontroller we must enable its power supply on the `EN` pin, which must have a `HIGH` status. 
+
+* **Relay**
+
+  El circuito *front-end* se conecta o desconecta de la celda abriendo el relé. Cuando el relé está abierto, no es posible la conexión y, por tanto, no se realizan mediciones. Esta es su configuración por defecto. Por lo tanto, cuando se quiere realizar una medida, el relé debe cerrarse y volver a abrirse al final. Su control está en el pin `RELAY`.
+
+* **Potentiostat**
+
+  Como ya hemos comentado anteriormente, el potenciostato es el encargado de polarizar la celda a una cierta tensión (*Vcell*) para poder leer una corriente (*Icell*). 
+
+  En nuestro caso, la polarización se da mediante un DAC (*Digital to Analog Convertor*) **MCP4725**. Su comunicación se da puede dar con I2C a la dirección `1100000` para determinar el voltaje a fijar. Puede generar una tensión de 0 a 4V. Además, esta señal unipolar se encuentra seguida de una etapa para generar voltajes tanto positivos como negativos, es decir de - 4 a 4 V. Es importante tener en cuenta la fórmula que relaciona la tensión de salida del DAC con la tensión de la celda *Vcell*: 
+
+  <p align="center">
+     <img src="assets/imgs/vdac.jpg" alt="Vdac" width="250" /> 
+
+
+  > **Ecuación 1:** Cálculo de la Vdac.
+
+However, this voltage cannot be taken as known exactly. This is why the ADC of the microcontroller can read **Vadc**, which is measured by the ***reference electrode (RE)*** and is then fed through a circuit that converts the **bipolar** signal into **unipolar** again. Given this consideration, the voltage measured by the ADC and that of the cell are related as follows:
+
+<p align="center">
+   <img src="assets/imgs/vcell.jpg" alt="Vcell" width="320" /> 
+
+> **Ecuación 2:** Cálculo de la Vcell.
+
+Finally, the cell current is measured thanks to the use of a **transimpedance amplifier (TIA),** which contains a 10 kΩ resistor. In this case the signal is also converted to unipolar by passing through a converter. Therefore, the current is defined as follows:
+
+<p align="center">
+   <img src="assets/imgs/icell.jpg" alt="Icell" width="300" /> 
+
+> **Ecuación 3:** Cálculo de la Icell.
+
+All of the above formulas must be used in the program in order to correctly determine the voltages and currents set and measured in the cell. 
+
+
+
 
 
 ## Git and GitHub
@@ -227,4 +263,18 @@ Different files have been necessary to implement the measurement process using c
 * `chronoamperometry`: in this file we can see, first of all, the obtention of the measurement parameters: the voltage to be set (`eDC`), the `sampling period`, as well as the total time of the measurement. The relay is closed and the *timer* is configured with the given *sampling period* (the **ClockSettings** function is defined in another file that we will discuss below). In addition, the number of samples to be taken is calculated, given the measurement time and the *sampling period*. By doing so, we start a loop with a counter. We set a variable "state" that defines what the sensor is measuring, in this case, it is doing a chronoamperometry so it will mark `state = CA`. Later we will see that this is used by the *timer*. Finally, when the measurement is finished the relay opens.
 
 * `adc`: this file has two main functions, the **ADC conversion** itself for the measurement, and the **timer*** configuration so that the interruption is given according to the frequency sent by the user. These functionalities are called and used in both chronoamperometry and cyclic voltammetry. 
-  * `ADC_measure()`:  this function is in charge of initializing the ADC for the measurement of 
+  * `ADC_measure()`:  this file has two main functions, the **ADC conversion** itself for the measurement, and the **timer*** configuration so that the interruption is given according to the frequency sent by the user. These functionalities are called and used in both chronoamperometry and cyclic voltammetry. 
+  * `ClockSettings()`: this function is in charge of determining the sampling period in the *timer* so that, whenever the interruption occurs in the *sampling period* determined in the instructions, a measurement is made. 
+* `dac`: in this file are defined the *setup* functions to initialize the DAC given its I2C address. The function **sendVoltage(),** in which the voltage to be determined in the cell is entered and which also calculates the voltage to be sent by the DAC for this purpose, is also defined. These functionalities must also be used and called in the **cyclic voltammetry**. 
+
+
+
+#### Cyclic Voltammetry
+
+The voltammetry functionality is summarized in the flowchart above. As with the previous case, the use of the ADC file as well as the DAC file are essential to measure and set the voltages. Especially for voltammetry, we find the `cyclic_voltammetry` file, which implements the flow shown in the figure.  
+
+<p align="center">
+   <img src="assets/imgs/CV_flow.jpg" alt="CV Flow Diagram" width="700" /> 
+
+First of all, obtaining the measurement instructions: voltage to be set (eBegin), the different vertices of the voltage signal, the cycles to be performed, as well as the scanRate (the variation of the voltage in the cell over time) and the eStep (increment/decrement between different consecutive points). Subsequently, by means of the following formula, the sampling period is determined, to be introduced in the **ClockSettings()** function previously commented to perform the pertinent measurements. The program is executed as long as the cycles to be performed have not ended (i.e., as long as the cycles>0) and each time the interruption is triggered by the sampling period. First it is determined if the voltage has reached one of the vertices, if so, the next target of the voltage signal to be sent to the cell is the consecutive vertex. If the target vertex has not been reached, a certain decrease or increase (depending on which vertex we are) is applied to the voltage signal sent to the cell until the target is reached. In case of reaching and passing this, the target itself is applied to the cell. It should be noted that in this flow is always considered that eVertex2<eBegin<eVertex1 to perform the relevant increments and decrements, therefore different configuration to this would not result in good measurements. Finally, at the end of the measurement the relay opens. As with chronoamperometry, the state while the measurements are being made is defined as CV, so that when the interruption is triggered the relevant measurements of this technique are given. This will be seen in more detail below with the implementation in the **stm32main.** file. 
+
