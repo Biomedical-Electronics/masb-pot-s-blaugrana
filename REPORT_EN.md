@@ -69,7 +69,7 @@ First, the cell is maintained at a potential at which no faradaic process occurs
 
 
 <p align="center">
-   <img src="assets/imgs/ca_plots.jpg" alt="CA plot" width="400" /> 
+   <img src="assets/imgs/CA_plots.jpg" alt="CA plot" width="400" /> 
 
 
 
@@ -90,7 +90,7 @@ Voltammetry [3] is an electrochemical technique that consists on applying an ele
 The current is plotted against the voltage applied to the electrochemical cell. The voltage is swept up and down across a range of values to successively drive the opposite directions on an electrolysis reaction. The final plot looks like the next image: 
 
 <p align="center">
-   <img src="assets/imgs/cv_plot.jpg" alt="CV plot" width="300" /> 
+   <img src="assets/imgs/CV_plot.jpg" alt="CV plot" width="300" /> 
 
 
 
