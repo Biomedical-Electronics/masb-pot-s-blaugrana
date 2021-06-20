@@ -2,7 +2,7 @@
 
 <img align="left" src="https://img.shields.io/badge/Entorno de desarrollo-STM32CubeIDE-blue">
 
-Este proyecto ha sido desarrollado en la asignatura de **Microcontroladores  para Aplicaciones y Sistemas Biomédicos** de Ingeniera Biomédica de la Universidad de Barcelona (UB). Ha sido realizado por el grupo **BlauGrana**,  formado por Julia meca (izquierda) y Raimon Casamitjana (derecha), y con la ayuda de su profesor Albert Álvarez, a quien le estamos muy agradecidos. :yum: 
+Este proyecto ha sido desarrollado en la asignatura de **Microcontroladores  para Aplicaciones y Sistemas Biomédicos** de Ingeniera Biomédica de la Universidad de Barcelona (UB). Ha sido realizado por el grupo **BlauGrana**,  formado por Julia Meca (izquierda) y Raimon Casamitjana (derecha), y con la ayuda de su profesor Albert Álvarez, a quien le estamos muy agradecidos. :yum: 
 
 
 
