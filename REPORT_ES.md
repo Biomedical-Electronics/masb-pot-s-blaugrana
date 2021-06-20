@@ -156,32 +156,32 @@ En esta sección se explica en más detalle los componentes del *front-end* del 
 <p align="center">
      <img src="assets/imgs/vdac.jpg" alt="Vdac" width="250" /> 
 
-  
+
 
   > **Ecuación 1:** Cálculo de la Vdac.
 
   
-  
-Aun así, esta tensión no se puede dar por conocida de forma exacta. Es por esto que mediante el ADC del microcontrolador se puede leer **Vadc**, la cual es medida por el ***reference electrode (RE)*** y que posteriormente es introducida a través de un circuito que convierte la **señal bipolar** en **unipolar** de nuevo. Dada esta consideración, la tensión medida por el ADC y la de la celda se relacionan de la siguiente forma:
-  
 
-  
+Aun así, esta tensión no se puede dar por conocida de forma exacta. Es por esto que mediante el ADC del microcontrolador se puede leer **Vadc**, la cual es medida por el ***reference electrode (RE)*** y que posteriormente es introducida a través de un circuito que convierte la **señal bipolar** en **unipolar** de nuevo. Dada esta consideración, la tensión medida por el ADC y la de la celda se relacionan de la siguiente forma:
+
+
+
 <p align="center">
      <img src="assets/imgs/vcell.jpg" alt="Vcell" width="320" /> 
-  
+
 > **Ecuación 2:** Cálculo de la Vcell.
-  
+
+
+
+  Por último, la corriente de la celda es medida gracias al uso de un **amplificador de transimpedancia (TIA),** el cual contiene una resistencia de 10 kΩ. En este caso la señal también se convierte en unipolar pasando por un conversor. Por lo tanto, la corriente se define de la siguiente forma:
 
   
-  Por último, la corriente de la celda es medida gracias al uso de un **amplificador de transimpedancia (TIA),** el cual contiene una resistencia de 10 kΩ. En este caso la señal también se convierte en unipolar pasando por un conversor. Por lo tanto, la corriente se define de la siguiente forma:
-  
-  
-  
+
   <p align="center">
      <img src="assets/imgs/icell.jpg" alt="Icell" width="300" /> 
-  
+
   > **Ecuación 3:** Cálculo de la Icell.
-  
+
   Todas las fórmulas expuestas anteriormente deberán usarse en el programa para poder determinar correctamente los voltajes y las corrientes fijadas y medidas en la celda. 
 
 
@@ -504,15 +504,19 @@ Dados estos resultados, se puede confirmar el buen funcionamiento del microcontr
 
 ## Conclusiones
 
+Con la finalización de este proyecto, podemos concluir que se ha podido realizar de manera satisfactoria 2 técnicas de medición electroquímicas mediante un potenciostato controlado por el microcontrolador: la cronoamperometría y la voltametría cíclica. Para ello, se ha necesitado implementar y entender el funcionamiento de los distintos periféricos de la placa tales como los timers y sus interrupciones, la comunicación USART y I2C, además del ADC. Es también importante destacar el papel del protocolo MASB-COMM-S juntamente con la codificación de los mensajes mediante COBS. También, el uso de Git y GitHub ha sido esencial para realizar las tareas de forma ágil, paralela y complementaria. 
+
+Respecto a la asignatura, en ella se ha podido adquirir las bases del funcionamiento de los microcontroladores y su programación tanto en Arduino como a nivel de registros. Esto se ha dado de forma muy progresiva, yendo primero a implementaciones sencillas como la simple activación de un LED, hasta la comunicación entre dispositivos con mensajes codificados a través de sus periféricos. Además, no solo se ha aprendido sobre los microcontroladores, sino que también se ha podido extraer la información esencial de datasheets para nuestros proyectos de ingeniería además de adoptar una nueva forma de trabajo en nuestros desarrollos con la herramienta de Git. 
+
 
 
 ## Bibliografía
 
-[1] https://upcommons.upc.edu/bitstream/handle/2099.1/4861/06_Annexos.pdf?sequence=7&isAllowed=yhttps://es.xcv.wiki/wiki/Chronoamperometry 
+[1] ESTUDIO ELECTROQUÍMICO DE POLÍMEROS CONDUCTORES. (2020). UPC. https://upcommons.upc.edu/bitstream/handle/2099.1/4861/06_Annexos.pdf?sequence=7&isAllowed=yhttps://es.xcv.wiki/wiki/Chronoamperometry
 
-[2] https://es.xcv.wiki/wiki/Chronoamperometry
+[2] Chronoamperometry - Wikipedia. (s. f.). Wikipedia. Recuperado 13 de junio de 2021, de https://es.xcv.wiki/wiki/Chronoamperometry
 
-[3] https://www.cio.mx/invest_13/gpom/archivos/Taller%20_CaracterizacionEQ_sesion2.pdf 
+[3] Galindo, R. (2020). Determinación de los niveles HOMO-LUMO mediante voltamperometría cíclica. https://www.cio.mx/invest_13/gpom/archivos/Taller%20_CaracterizacionEQ_sesion2.pdf
 
 
 

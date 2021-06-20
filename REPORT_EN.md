@@ -489,15 +489,17 @@ Given these results, it can be confirmed that the microcontroller and its commun
 
 ## Conclusions
 
+With the finalization of this project, we can conclude that it has been possible to successfully perform 2 electrochemical measurement techniques using a potentiostat controlled by the microcontroller: chronoamperometry and cyclic voltammetry. For this, it has been necessary to implement and understand the functioning of the different peripherals of the board such as the timers and their interruptions, the USART and I2C communication, as well as the ADC. It is also important to highlight the role of the MASB-COMM-S protocol together with the coding of messages using COBS. Also, the use of Git and GitHub has been essential to perform the tasks in an agile, parallel and complementary way. 
 
+Regarding the subject, it has been possible to acquire the basics of microcontrollers and their programming both in Arduino and STM32CubeIDE. This has been given in a very progressive way, going first to east implementations such as the simple activation of an LED, to communication between devices with coded messages through their peripherals. In addition, we have not only learned about microcontrollers, but we have also been able to extract essential information from datasheets for our engineering projects as well as adopting a new way of working in our developments with the Git tool. 
 
 ## References
 
-[1] https://upcommons.upc.edu/bitstream/handle/2099.1/4861/06_Annexos.pdf?sequence=7&isAllowed=yhttps://es.xcv.wiki/wiki/Chronoamperometry 
+[1] ESTUDIO ELECTROQUÍMICO DE POLÍMEROS CONDUCTORES. (2020). UPC. https://upcommons.upc.edu/bitstream/handle/2099.1/4861/06_Annexos.pdf?sequence=7&isAllowed=yhttps://es.xcv.wiki/wiki/Chronoamperometry
 
-[2] https://es.xcv.wiki/wiki/Chronoamperometry
+[2] Chronoamperometry - Wikipedia. (s. f.). Wikipedia. Recuperado 13 de junio de 2021, de https://es.xcv.wiki/wiki/Chronoamperometry
 
-[3] https://www.cio.mx/invest_13/gpom/archivos/Taller%20_CaracterizacionEQ_sesion2.pdf 
+[3] Galindo, R. (2020). Determinación de los niveles HOMO-LUMO mediante voltamperometría cíclica. https://www.cio.mx/invest_13/gpom/archivos/Taller%20_CaracterizacionEQ_sesion2.pdf
 
 
 
