@@ -8,7 +8,11 @@ This project has been developed in the subject of **Microcontrollers for Biomedi
    <img src="assets/imgs/julia.jpg" alt="Julia" width="250" /> 
    <img src="assets/imgs/raimon.jpeg" alt="Raimon" width="250" /> 
 
+
+
 > **Figure 1:** Julia Meca (left) and Raimon Casamitjana, authors of this project. 
+
+
 
 In this document you will find the necessary contents to carry out and understand the project, which consists on the **configuration of a microcontroller to perform electrochemical tests using a potentiostat**.  From the programming code we have developed, chronoamperometries and cyclic voltammetries can be performed in an automatized way.
 
@@ -36,6 +40,8 @@ In this document you will find the necessary contents to carry out and understan
 - [Conclusions](#conclusions)
 - [References](#references)
 
+
+
 ## Introduction
 
 Within the Blaugrana team, Júlia Meca and Raimon Casamitjana have carried out the project documented in this report. This has been developed in the framework of the last course of Biomedical Engineering, in the subject of Microcontrollers for Biomedical Applications and Systems. In a nutshell, the project is based on the programming of a potentiostat. More specifically, this consists of a *front-end* properly designed for use in the project, as well as a *back-end* composed of the **STMelectronics NUCLEO-F410RE** evaluation board.
@@ -50,6 +56,8 @@ The electrodes must be in direct contact with the substance to be tested, but th
 
 Regarding its operation, the potentiostat is in charge of measuring and controlling the potential of the electrochemical cell, detecting changes in its resistance (R) and varying the intensity of the current administered (I) to the system according to these fluctuations, so that the potential difference remains constant. 
 
+
+
 ### Chronoamperometry
 
 Chronoamperometry (CA) [1] is a type of electrochemical measurement based on subjecting a **working electrode** to an instantaneous potential change, usually by means of a **step signal**. In this way, the response of the current or intensity of the electrochemical cell can be studied over time. 
@@ -63,7 +71,11 @@ First, the cell is maintained at a potential at which no faradaic process occurs
 <p align="center">
    <img src="assets/imgs/ca_plots.jpg" alt="CA plot" width="400" /> 
 
+
+
 > **Figure 1:** Typical plot of the Chronoamperometry.  
+
+
 
 In addition, this technique does not require labeling of the compound to be characterized.
 
@@ -79,6 +91,8 @@ The current is plotted against the voltage applied to the electrochemical cell. 
 
 <p align="center">
    <img src="assets/imgs/cv_plot.jpg" alt="CV plot" width="300" /> 
+
+
 
 > **Figure 2:** Typical plot of the cyclic voltammetry. 
 
@@ -124,9 +138,13 @@ This section explains in more detail the components of the *front-end* of the po
 
   The PMU is the power management unit (it powers the *front-end*). By default it is disabled and therefore it has to be enabled at startup. By means of the microcontroller we must enable its power supply on the `EN` pin, which must have a `HIGH` status. 
 
+  
+
 * **Relay**
 
   The *front-end* circuit is connected or disconnected from the cell by opening the relay. When the relay is open, no connection is possible and therefore no measurements are performed. This is its default setting. Therefore, when a measurement is to be made, the relay must be closed and reopened at the end. Its control is on the `RELAY` pin.
+
+  
 
 * **Potentiostat**
 
@@ -172,7 +190,9 @@ A version control system is a tool that allows us to collaborate with other deve
 
 ### Development branches
 
-To work in a more organized way and not overwrite files, it is common to create separate versions of the code (called **branches** in Git) and then merge it with the **master** version when we have finished editing it. If we look at the following image, the new changes would be tested in the `feature` branches and, once confirmed, they would be added to the `develop` branch and, finally, to the `master` branch. 
+To work in a more organized way and not overwrite files, it is common to create separate versions of the code (called **branches** in Git) and then merge it with the **master** version when we have finished editing it. If we look at the following image, the new changes would be tested in the `feature` branches and, once confirmed, they would be added to the `develop` branch and, finally, to the `master` branch.
+
+ 
 
 <p align="center">
    <img src="assets/imgs/branches.JPG" alt="Branches" width="350" /> 
@@ -200,11 +220,15 @@ In this section we will talk about the operation of the programs (chronoamperome
 
 However, before that, we will talk about how to connect the potentiostat to the board (the **pinout**), which are these pins used by the microcontroller (*PA0, PA1, PB8...*) to control the potentiostat, as well as their typology and description.
 
+
+
 ### Pinout of the STM32 Evaluation Board
 
 <p align="center">
    <img src="assets/imgs/stm32.png" alt="EVB" width="300" /> 
    <img src="assets/imgs/pinout.png" alt="Pinout" width="300" /> 
+
+
 
 > **Figure 4**: STM-32 Núcleo 64 (left) and the input and output pins (right).
 
@@ -263,11 +287,15 @@ In reference to the desktop application as well as the initial submission of ins
 <p align="center">
    <img src="assets/imgs/visense_flow.jpg" alt="viSense Flow Diagram" width="600" /> 
 
+
+
 > **Figure 5:** Flow diagram of the viSens-S program
 
 
 
 For the implementation of the depicted workflow, asynchronous communication via **USART** as well as **COBS** coding and the [MASB-COMM-S](https://github.com/Biomedical-Electronics/masb-pot-s-blaugrana/blob/master/Docs/protocolo-de-comunicacion.md) protocol between the device and the desktop application is essential. For this reason, the `cobs.c` and `masb_comm_s.c` files perform this function. The former is responsible for the encoding/decoding of the information, while the latter configures the asynchronous communication, the receiving/reading of measurement instructions to store their parameters in the appropriate structures (by means of junctions), as well as the transmission of the sensed data. It should be noted that these functionalities were already done in previous practices of the course. The taking of measurements depending on their technique will be described in detail below. 
+
+
 
 #### Chronoamperometry
 
@@ -275,6 +303,8 @@ In general, the functionality of chronoamperometry can be represented as follows
 
 <p align="center">
    <img src="assets/imgs/CA_flow.jpg" alt="CA Flow Diagram" width="400" /> 
+
+
 
 > **Figure 6:** Chronoamperometry (CA) flowchart.
 
@@ -295,7 +325,12 @@ The voltammetry functionality is summarized in the flowchart above. As with the 
 
 <p align="center">
    <img src="assets/imgs/CV_flow.jpg" alt="CV Flow Diagram" width="700" /> 
+
+
+
 > **Figure 7:** Flow diagram of the Cyclic Voltammetry (CV).
+
+
 
 First of all, obtaining the measurement instructions: voltage to be set (`eBegin`), the different vertices of the voltage signal, the cycles to be performed, as well as the `scanRate` (the variation of the voltage in the cell over time) and the `eStep` (increment/decrement between different consecutive points). Subsequently, by means of the following formula, the sampling period is determined, to be introduced in the **ClockSettings()** function previously commented to perform the pertinent measurements. The program is executed as long as the cycles to be performed have not ended (i.e., as long as the cycles>0) and each time the interruption is triggered by the sampling period. First it is determined if the voltage has reached one of the vertices, if so, the next target of the voltage signal to be sent to the cell is the consecutive vertex. If the target vertex has not been reached, a certain decrease or increase (depending on which vertex we are) is applied to the voltage signal sent to the cell until the target is reached. In case of reaching and passing this, the target itself is applied to the cell. It should be noted that in this flow is always considered that eVertex2 < eBegin < eVertex1 to perform the relevant increments and decrements, therefore different configuration to this would not result in good measurements. Finally, at the end of the measurement the relay opens. As with chronoamperometry, the state while the measurements are being made is defined as CV, so that when the interruption is triggered the relevant measurements of this technique are given. This will be seen in more detail below with the implementation in the **stm32main.** file. 
 
@@ -310,7 +345,10 @@ The `stm32main` file contains the operation of the microcontroller to determine,
 According to the command received from the MASB-COMM-S communication protocol, the corresponding measurement is performed. First of all, the parameters of the measurement are extracted to be stored in the corresponding structures, to finally execute the flow of each measurement. For each technique, the state CA for chronoamperometry as well as CV for cyclic voltammetry are defined. These are used in the timer interrupt, in which it determines in which state the measurement is in and performs it to be sent to the host. In addition, the count is incremented each time a measurement is taken in order to number the points. In this way, the corresponding technique is performed until it is finished and another one is received. 
 
 <p align="center">
-   <img src="assets/imgs/micro_flow.jpg" alt="Microcontroller Flow Diagram" width="700" /> 
+   <img src="assets/imgs/micro_flow.jpg" alt="Microcontroller Flow Diagram" width="600" /> 
+
+
+
 
 > **Figure 8:** Flow diagram of the microcontroller.
 
@@ -327,23 +365,35 @@ First of all, it was tested with the circuit shown in the figure below:
 <p align="center">
    <img src="assets/imgs/circuit.jpg" alt="Potentiostat Circuit" width="400" /> 
 
+
+
 > **Figure 9:** Electric circuit of the potentiostat.  
+
+
 
 Both chronoamperometry and cyclic voltammetry showed measurements corresponding to expectations. The results for this first test can be seen below: 
 
-###### Chronoamperometry
+#### Chronoamperometry
 
 <p align="center">
    <img src="assets/imgs/initialCA.jpg" alt="Tests de cronoamperometría" width="400" /> 
 
+
+
 > **Figure 10**: CA initial tests. 
 
-###### Cyclic Voltammetry
+
+
+#### Cyclic Voltammetry
 
 <p align="center">
    <img src="assets/imgs/initialCV.jpg" alt="Test de Voltametría cíclica" width="400" /> 
 
+
+
 > **Figure 11**: CV initial tests.
+
+
 
 ### Final validation
 
@@ -352,13 +402,17 @@ However, the ultimate goal of the project is to be able to perform the different
 <p align="center">
    <img src="assets/imgs/sensor.jpg" alt="Sensor" width="300" /> 
 
+
+
 > **Figure 12:** Picture of the microcontroller during the measuring of the CA and CV. 
+
+
 
 The figure above shows the microcontroller board together with the chip where the samples are deposited to be measured with the implementation carried out. 
 
 The results obtained in **viSens-S** with respect to the parameters defined in chronoamperometry were the following, both for 1mM and 5mM. 
 
-###### Chronoamperometry
+#### Chronoamperometry
 
 |      Parameters      | Value |
 | :------------------: | :---: |
@@ -368,8 +422,12 @@ The results obtained in **viSens-S** with respect to the parameters defined in c
 
 > **Table 1:** Initial parameters for the CA plot.
 
+
+
 <p align="center">
    <img src="assets/imgs/final_CA_1.jpg" alt="Prueba final de la cronoamperometría" width="600" /> 
+
+
 
 > **Figure 13 :** Final chronoamperometry plots for different potassium chloride *buffer* concentrations. On the left, a concentration of 1mM, on the right, a concentration of 5mM. 
 
@@ -380,11 +438,15 @@ In order to observe their differences more visually (given the different concent
 <p align="center">
    <img src="assets/imgs/excel_CA.jpg" alt="Gráfico de la CA" width="400" /> 
 
+
+
 > **Figure 14**: *Excel* graph with the data obtained from the CA. In blue, potassium ferricyanide solution with 1mM buffer, in orange, 5mM buffer. 
+
+
 
 The graph above shows the different behavior given the same measurement parameters in the case of different concentrations in the sample. 
 
-###### Cyclic Voltammetry
+#### Cyclic Voltammetry
 
 In the same way, measurements were performed with cyclic voltammetry, obtaining the following results with the **viSens-s** application:  
 
@@ -404,12 +466,18 @@ In the same way, measurements were performed with cyclic voltammetry, obtaining 
 <p align="center">
    <img src="assets/imgs/final_CV.jpg" alt="Prueba final de Voltametría cíclica" width="600" /> 
 
+
+
 > **Figure 15 :** Final voltammetry plots for different potassium chloride *buffer* concentrations. On the left, a concentration of 1mM, on the right, a concentration of 5mM.   
+
+
 
 Again, in order to be able to determine the differences clearly with different concentrations, the graphs have been superimposed:  
 
 <p align="center">
    <img src="assets/imgs/excel_CV.jpg" alt="Gráfico de VC" width="400" /> 
+
+
 
 > **Figure 16:**  *Excel* graph with the data obtained from the CV. In blue, potassium ferricyanide solution with 1mM buffer, in orange, 5mM buffer. 
 
