@@ -4,9 +4,13 @@
 
 Este proyecto ha sido desarrollado en la asignatura de **Microcontroladores  para Aplicaciones y Sistemas Biomédicos** de Ingeniera Biomédica de la Universidad de Barcelona (UB). Ha sido realizado por el grupo **BlauGrana**,  formado por Julia meca (izquierda) y Raimon Casamitjana (derecha), y con la ayuda de su profesor Albert Álvarez, a quien le estamos muy agradecidos. :yum: 
 
+
+
 <p align="center">
    <img src="assets/imgs/julia.jpg" alt="Julia" width="250" /> 
    <img src="assets/imgs/raimon.jpeg" alt="Raimon" width="250" /> 
+
+
 
 > **Figura 1:** Julia Meca (izquierda) y Raimon Casamitjana, autores del proyecto. 
 
@@ -40,6 +44,8 @@ En este documento se encuentran los contenidos necesarios para realizar y entend
 
 Dentro del equipo Blaugrana, Júlia Meca y Raimon Casamitjana han realizado el proyecto documentado en este report. Este se encuentra desarrollado en el marco del último curso de Ingeniería Biomédica, en la asignatura de Microcontroladores para aplicaciones y Sistemas Biomédicos. En pocas palabras, el proyecto se basa en la programación de un potenciostato. Más específicamente, este está formado por un *front-end* propiamente diseñado para su uso en el proyecto, así como un *back-end* compuesto por la placa de evaluación **NUCLEO-F410RE de STMelectronics.** 
 
+
+
 ### Potenciostato
 
 El potenciostato es un instrumento muy usado en experimentos electroquímicos tales como potenciometrías, un método analítico que mide la diferencia de potencial entre electrodos sumergidos en una solución. En estos experimentos, se requiere una fuente de diferencia de potencial constante: el potenciostato, el cual controla el voltaje en uno o más **electrodos de trabajo** con ayuda de un **electrodo de referencia** y un **electrodo auxiliar.**
@@ -59,9 +65,14 @@ Esta técnica es usada de forma habitual para la obtención de una actividad det
 Primero, se mantiene la celda a un potencial en el cual ningún proceso faradaico ocurra para que, cuando se aplique un potencial determinado, ocurra la una reacción de oxidación-reducción de las especies electroactivas presentes en la disolución. De esta forma, se obtiene finalmente circulando una intensidad determinada. Una cronoamperometría corresponde a una figura tal como la siguiente en la que, después de una aplicación de voltaje en forma de señal escalón, se evalúa la corriente durante el tiempo:
 
 <p align="center">
-   <img src="assets/imgs/ca_plots.jpg" alt="CA plot" width="400" /> 
+   <img src="assets/imgs/CA_plots.jpg" alt="CA plot" width="500" /> 
+
+
+
 
 > **Figura 1:** Gráfica típica de la cronoamperometría.  
+
+
 
 Además, mediante esta técnica no se requiere etiquetado del compuesto a caracterizar. 
 
@@ -74,7 +85,10 @@ La voltamperometria ciclica, en cambio, se utiliza para estudiar mecanismos de r
 En la gráfica, la corriente eléctrica se sitúa en el eje vertical y el voltaje (que se aplica a la celda electroquímica), al eje horizontal. Se realiza un barrido del voltaje que hace que la reacción de electrolisis cambie constantemente de dirección. 
 
 <p align="center">
-   <img src="assets/imgs/cv_plot.jpg" alt="CV plot" width="300" /> 
+   <img src="assets/imgs/CV_plot.jpg" alt="CV plot" width="300" /> 
+
+
+
 
 > **Figura 2:** Gráfica típica de la voltametría cíclica.  
 
@@ -117,13 +131,19 @@ El proyecto también gira alrededor de la aplicación de escritorio *viSens-S* (
 
 En esta sección se explica en más detalle los componentes del *front-end* del potenciostato controlado por el microcontrolador y su función. Esto es esencial para poder implementar de forma detallada la programación, y tener en cuenta algunas de las fórmulas para ciertas variables de los prototipos usados. 
 
+
+
 * **Power Management Unit (PMU)**
 
   La PMU es la unidad gestora de potencia (alimenta el *front-end*). Por defecto se encuentra deshabilitada y por lo tanto se tiene que activar de inicio. Mediante el microcontrolador deberemos habilitar su alimentación en el pin `EN`, el cual tendrá que tener un estado `HIGH`. 
 
+  
+
 * **Relé**
 
   El circuito del *front-end* se encuentra conectado o desconectado de la celda mediante la apertura del relé. Cuando este se encuentra abierto no habrá conexión posible y, por consiguiente, no se toman medidas. Esta es su configuración por defecto. Por lo tanto, cuando una medida quiera tomarse, el relé se deberá cerrar y volver abrirse al final. Su control se encuentra en el pin `RELAY`.
+
+  
 
 * **Potenciostato**
 
@@ -131,27 +151,37 @@ En esta sección se explica en más detalle los componentes del *front-end* del 
 
   En nuestro caso, la polarización se da mediante un DAC (*Digital to Analog Convertor*) **MCP4725**. Su comunicación se da puede dar con I2C a la dirección `1100000` para determinar el voltaje a fijar. Puede generar una tensión de 0 a 4V. Además, esta señal unipolar se encuentra seguida de una etapa para generar voltajes tanto positivos como negativos, es decir de - 4 a 4 V. Es importante tener en cuenta la fórmula que relaciona la tensión de salida del DAC con la tensión de la celda *Vcell*: 
 
-  <p align="center">
+  
+  
+<p align="center">
      <img src="assets/imgs/vdac.jpg" alt="Vdac" width="250" /> 
 
   
 
   > **Ecuación 1:** Cálculo de la Vdac.
 
-  Aun así, esta tensión no se puede dar por conocida de forma exacta. Es por esto que mediante el ADC del microcontrolador se puede leer **Vadc**, la cual es medida por el ***reference electrode (RE)*** y que posteriormente es introducida a través de un circuito que convierte la **señal bipolar** en **unipolar** de nuevo. Dada esta consideración, la tensión medida por el ADC y la de la celda se relacionan de la siguiente forma:
+  
+  
+Aun así, esta tensión no se puede dar por conocida de forma exacta. Es por esto que mediante el ADC del microcontrolador se puede leer **Vadc**, la cual es medida por el ***reference electrode (RE)*** y que posteriormente es introducida a través de un circuito que convierte la **señal bipolar** en **unipolar** de nuevo. Dada esta consideración, la tensión medida por el ADC y la de la celda se relacionan de la siguiente forma:
+  
 
-  <p align="center">
+  
+<p align="center">
      <img src="assets/imgs/vcell.jpg" alt="Vcell" width="320" /> 
+  
+> **Ecuación 2:** Cálculo de la Vcell.
+  
 
-  > **Ecuación 2:** Cálculo de la Vcell.
-
+  
   Por último, la corriente de la celda es medida gracias al uso de un **amplificador de transimpedancia (TIA),** el cual contiene una resistencia de 10 kΩ. En este caso la señal también se convierte en unipolar pasando por un conversor. Por lo tanto, la corriente se define de la siguiente forma:
-
+  
+  
+  
   <p align="center">
      <img src="assets/imgs/icell.jpg" alt="Icell" width="300" /> 
-
+  
   > **Ecuación 3:** Cálculo de la Icell.
-
+  
   Todas las fórmulas expuestas anteriormente deberán usarse en el programa para poder determinar correctamente los voltajes y las corrientes fijadas y medidas en la celda. 
 
 
@@ -167,6 +197,8 @@ Un sistema de control de versiones es una herramienta que nos permite colaborar 
 ### Ramas de desarrollo
 
 Para trabajar de forma más organizada y no sobrescribir los archivos, es común crear versiones separadas del código (llamadas **ramas** en Git) y después fusionarla con la versión **maestra** cuando hayamos terminado de editarla. Si observamos la siguiente imagen, los nuevos cambios se probarían en las ramas `feature`y, una vez confirmada su validez, serían añadidos a la rama `develop` y, finalmente, a la rama `master`. 
+
+
 
 <p align="center">
    <img src="assets/imgs/branches.JPG" alt="Branches" width="350" /> 
@@ -199,6 +231,8 @@ Aún así, antes de ello, hablaremos de cómo conectar el potenciostato a la pla
 <p align="center">
    <img src="assets/imgs/stm32.png" alt="EVB" width="300" /> 
    <img src="assets/imgs/pinout.png" alt="Pinout" width="300" /> 
+
+
 
 >  **Figura 4**: STM-32 Núcleo 64 (izquierda) y sus entradas y salidas o *pinout* (derecha).
 
@@ -248,6 +282,8 @@ Antes de explicar el funcionamiento del programa y para facilitar el entendimien
 
 Ahora sí, vamos a ver la descripción del programa! :smile:
 
+
+
 #### viSens-S y su comunicación
 
 En referencia a la aplicación de escritorio así como el envío inicial de instrucciones y medidas tomadas, su diagrama es representado a continuación:
@@ -257,11 +293,15 @@ En referencia a la aplicación de escritorio así como el envío inicial de inst
 <p align="center">
    <img src="assets/imgs/visense_flow.jpg" alt="viSense Flow Diagram" width="600" /> 
 
+
+
 > **Figura 5:** Diagrama de flujo del programa viSens-S
 
 
 
 Para la implementación del flujo de trabajo representado, la comunicación asíncrona mediante **USART** así como la codificación **COBS** y el protocolo [MASB-COMM-S](https://github.com/Biomedical-Electronics/masb-pot-s-blaugrana/blob/master/Docs/protocolo-de-comunicacion.md) entre el dispositivo y la aplicación de escritorio es esencial. Por esta razón, los archivos `cobs.c` y `masb_comm_s.c` realizan esta función. El primero se encarga de la codificación/decodificación de la información, mientras que el segundo, por su lado, configura la comunicación asíncrona, el recibimiento/lectura de instrucciones de medición para almacenar sus parámetros en las debidas estructuras (mediante uniones), así como la transmisión de los datos sensados. Cabe destacar que estas funcionalidades ya se encontraban hechas en prácticas anteriores de la asignatura. La toma de medidas dependiendo de su técnica será expuesta de forma detallada a continuación. 
+
+
 
 #### Cronoamperometría
 
@@ -269,6 +309,8 @@ De forma general, la funcionalidad de la cronoamperometría puede ser representa
 
 <p align="center">
    <img src="assets/imgs/CA_flow.jpg" alt="CA Flow Diagram" width="400" /> 
+
+
 
 > **Figura 6:** Diagrama de flujo de la Cronoamperometría (CA).
 
@@ -292,8 +334,10 @@ La funcionalidad de la voltametría se encuentra resumida en el diagrama de fluj
 
 <p align="center">
    <img src="assets/imgs/CV_flow.jpg" alt="CV Flow Diagram" width="700" /> 
-> **Figura 7:** Diagrama de flujo de la voltametría cíclica
 
+
+
+> **Figura 7:** Diagrama de flujo de la voltametría cíclica
 
 
 Primero de todo, la obtención de las instrucciones de la medición: voltaje a fijar (`eBegin`), los distintos vértices de la señal de voltaje, los ciclos a realizar, así como el `scanRate` (la variación de la tensión en la celda con el tiempo) y el `eStep` (incremento/decremento entre distintos puntos consecutivos). Posteriormente mediante la siguiente formula del periodo de sampleo se determina, para ser introducida en la función **ClockSettings()** previamente comentada para realizar las pertinentes mediciones. El programa se ejecuta siempre y cuando los ciclos a realizar no hayan finalizado (es decir, siempre que los ciclos>0) y cada vez que salte la interrupción dado el periodo de sampleo. Primero se determina si el voltaje ha llegado a uno de los vértices, de ser así, el siguiente objetivo de la señal voltaje a enviar a la celda es el vértice consecutivo. De no haberse llegado al vértice objetivo, un cierto decremento o incremento (dependiendo en qué vértice nos encontremos) es aplicado a la señal voltaje enviada a la celda hasta llegarse a dicho objetivo. En caso de llegarse y pasarse de este, el propio objetivo es aplicado a la celda. Cabe destacar que en este flujo se considera siempre que eVertex2 < eBegin < eVertex1 para realizar los pertinentes incrementos y decrementos, por lo tanto distinta configuración a esta no resultaría en buenas medidas. Finalmente, al acabar la medida el relé se abre. Igual que con la cronoamperometría, el estado mientras se realizan las mediciones se define como CV, para que cuando salte la interrupción las pertinentes mediciones de esta técnica se den. Esto se verá en más detalle a continuación con la implementación en el fichero **stm32main.** 
@@ -311,6 +355,8 @@ Según el comando recibido del protocolo de comunicación MASB-COMM-S, la medici
 <p align="center">
    <img src="assets/imgs/micro_flow.jpg" alt="Microcontroller Flow Diagram" width="700" /> 
 
+
+
 > **Figura 8:** Diagrama de flujo del microcontrolador
 
 
@@ -326,25 +372,37 @@ Antes de todo, se testeó con el circuito representado en la figura siguiente:
 <p align="center">
    <img src="assets/imgs/circuit.jpg" alt="Potentiostat Circuit" width="400" /> 
 
+
+
 > **Figura 9:** Circuito eléctrico del potenciostato. 
 
 
 
 Tanto la cronoamperometría como la voltametría cíclica demostraron realizar unas medidas correspondientes a lo esperado. Los resultados para este primera prueba se pueden ver a continuación: 
 
-###### Cronoamperometría
+
+
+#### Cronoamperometría
 
 <p align="center">
    <img src="assets/imgs/initialCA.jpg" alt="Tests de cronoamperometría" width="400" /> 
 
+
+
 > **Figura 10**: Pruebas iniciales con la cronoamperometría. 
 
-###### Voltametría Cíclica
+
+
+#### Voltametría Cíclica
 
 <p align="center">
    <img src="assets/imgs/initialCV.jpg" alt="Test de Voltametría cíclica" width="400" /> 
 
+
+
 > **Figura 11**: Pruebas iniciales con la cronoamperometría. 
+
+
 
 ### Prueba final
 
@@ -353,12 +411,20 @@ Sin embargo, el objetivo final del proyecto es poder realizar las distintas téc
 <p align="center">
    <img src="assets/imgs/sensor.jpg" alt="Sensor" width="300" /> 
 
+
+
 > **Figura 12:** Fotografía del microcontrolador durante la medición de la CA y la CV. 
+
+
 
 En la figura superior se puede observar la placa del microcontrolador juntamente acoplada con el chip donde se depositan las muestras para poder ser medidas con la implementación realizada. 
 Los resultados obtenidos en **viSens-S** con respecto a los parámetros definidos en cronoamperometría fueron los siguientes, tanto para 1mM cómo 5mM. 
 
-###### Cronoamperometría
+
+
+#### Cronoamperometría
+
+
 
 |      Parámetros      | Valor |
 | :------------------: | :---: |
@@ -367,6 +433,8 @@ Los resultados obtenidos en **viSens-S** con respecto a los parámetros definido
 | Measurement time (s) |  10   |
 
 > **Tabla 1:** Parámetros iniciales para el gráfico de la CA.
+
+
 
 <p align="center">
    <img src="assets/imgs/final_CA_1.jpg" alt="Prueba final de la cronoamperometría" width="600" /> 
@@ -377,8 +445,12 @@ Los resultados obtenidos en **viSens-S** con respecto a los parámetros definido
 
 Para observar de forma más visual sus diferencias (dadas las distintas concentraciones usadas), se han superpuesto las dos gráficas: 
 
+
+
 <p align="center">
    <img src="assets/imgs/excel_CA.jpg" alt="Gráfico de la CA" width="400" /> 
+
+
 
 > **Figura 14 :** Gráfico *excel* con los datos obtenidos de la CA. En azul, la solución de ferricianuro de potasio con un tampón de 1mM, en naranja, de 5mM. 
 
@@ -388,9 +460,7 @@ En la gráfica superior puede observarse el distinto comportamiento dados los mi
 
 
 
-
-
-###### Voltametría Cíclica
+#### Voltametría Cíclica
 
 De la misma forma, se realizaron las medidas con la voltametría cíclica, obteniendo los siguiente resultados con la aplicación viSens-s: 
 
@@ -410,13 +480,19 @@ De la misma forma, se realizaron las medidas con la voltametría cíclica, obten
 <p align="center">
    <img src="assets/imgs/final_CV.jpg" alt="Prueba final de Voltametría cíclica" width="600" /> 
 
+
+
 > **Figura 15 :** Gráficos finales de la voltametría para diferentes concentraciones del *buffer* de cloruro de potasio. A la izquierda, una concentración de 1mM, a la derecha, una concentración de 5mM.  
+
+
 
 Otra vez, para poder determinar las diferencias de forma clara con las distintas concentraciones, se han superpuesto las gráficas: 
 
 
 <p align="center">
    <img src="assets/imgs/excel_CV.jpg" alt="Gráfico de VC" width="400" /> 
+
+
 
 > **Figura 16 :** Gráfico *excel* con los datos obtenidos de la VC. En azul, la solución de ferricianuro de potasio con un tampón de 1mM, en naranja, de 5mM. 
 
