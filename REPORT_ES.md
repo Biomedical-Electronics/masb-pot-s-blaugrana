@@ -1,6 +1,6 @@
 # Proyecto final Microcontroladores - Configuración de un potenciostato
 
-<img align="left" src="https://img.shields.io/badge/Entorno de desarrollo-STM32CubeIDE-blue">
+<img align="left" src="https://img.shields.io/badge/Entorno de desarrollo-STM32CubeIDE-blue"></br>
 
 Este proyecto ha sido desarrollado en la asignatura de **Microcontroladores  para Aplicaciones y Sistemas Biomédicos** de Ingeniera Biomédica de la Universidad de Barcelona (UB). Ha sido realizado por el grupo **BlauGrana**,  formado por Julia Meca (izquierda) y Raimon Casamitjana (derecha), y con la ayuda de su profesor Albert Álvarez, a quien le estamos muy agradecidos. :yum: 
 
