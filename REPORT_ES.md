@@ -29,7 +29,10 @@ En este documento se encuentran los contenidos necesarios para realizar y entend
     - [viSens-S y su comunicación](#viSens-S-y-su-comunicación)
     - [Cronoamperometría](#cronoamperometría)
     - [Voltametría ciclíca](#voltametria-ciclica)
+    - [Microcontrolador](#Microcontrolador)
 - [Resultados](#resultados)
+  - [Tests iniciales](#tests-iniciales)
+  - [Prueba final](#prueba-final)
 - [Conclusiones](#conclusiones)
 - [Bibliografía](#bibliografía)
 
@@ -49,29 +52,37 @@ Respecto a su funcionamiento, el potenciostato se encarga de medir y controlar e
 
 ### Cronoamperometría
 
-La cronoamperometría (CA) es un tipo de medición electroquímica. Se basa en someter a un electrodo de trabajo a un cambio de potencial instantáneo comúnmente mediante una señal escalón. De esta forma, se puede estudiar la respuesta de la corriente o intensidad de la celda electroquímica durante el tiempo. 
+La cronoamperometría (CA) [1] es un tipo de medición electroquímica. Se basa en someter a un electrodo de trabajo a un cambio de potencial instantáneo comúnmente mediante una señal escalón. De esta forma, se puede estudiar la respuesta de la corriente o intensidad de la celda electroquímica durante el tiempo. 
 
-Esta técnica es usada de forma habitual para la obtención de una actividad determinada de una especie biológica dada la cuantificación de un analito de interés en forma de una señal de intensidad.
+Esta técnica es usada de forma habitual para la obtención de una actividad determinada de una especie biológica dada la cuantificación de un analito de interés en forma de una señal de intensidad [2].
 
- **ACABAR TMB**
+Primero, se mantiene la celda a un potencial en el cual ningún proceso faradaico ocurra para que, cuando se aplique un potencial determinado, ocurra la una reacción de oxidación-reducción de las especies electroactivas presentes en la disolución. De esta forma, se obtiene finalmente circulando una intensidad determinada. Una cronoamperometría corresponde a una figura tal como la siguiente en la que, después de una aplicación de voltaje en forma de señal escalón, se evalúa la corriente durante el tiempo:
 
+<p align="center">
+   <img src="assets/imgs/ca_plots.jpg" alt="CA plot" width="400" /> 
 
+> **Figura 1:** Gráfica típica de la cronoamperometría.  
+
+Además, mediante esta técnica no se requiere etiquetado del compuesto a caracterizar. 
 
 ### Voltamperometría cíclica
 
-La voltamperometría es una técnica electroquímica consiste en aplicar un potencial eléctrico a un electrodo de trabajo, el cual se encuentra sumergido en una disolución que contiene una especie electroactiva y se mide la intensidad de corriente (I) que circula por dicho electrodo. 
+La voltamperometría [3] es una técnica electroquímica consiste en aplicar un potencial eléctrico a un electrodo de trabajo, el cual se encuentra sumergido en una disolución que contiene una especie electroactiva y se mide la intensidad de corriente (I) que circula por dicho electrodo. 
 
-La voltamperometria ciclica, en cambio, se utiliza para estudiar mecanismos de reacción como los procesos redox. La variación de potencial en un electrodo estacionario es provocada por una señal de forma triangular que se invierte y vuelve a su valor original, dando lugar a la forma típica de la VC:
+La voltamperometria ciclica, en cambio, se utiliza para estudiar mecanismos de reacción como los procesos redox. La variación de potencial en un electrodo estacionario es provocada por una señal de forma triangular que se invierte y vuelve a su valor original, dando lugar a la forma típica de la VC.
 
-fotooooooo
+En la gráfica, la corriente eléctrica se sitúa en el eje vertical y el voltaje (que se aplica a la celda electroquímica), al eje horizontal. Se realiza un barrido del voltaje que hace que la reacción de electrolisis cambie constantemente de dirección. 
 
-**ACABAR, m’ha fet mandra sorry**
+<p align="center">
+   <img src="assets/imgs/cv_plot.jpg" alt="CV plot" width="300" /> 
+
+> **Figura 2:** Gráfica típica de la voltametría cíclica.  
 
 
 
 ## Objetivos
 
-El objetivo del proyecto es la obtención de medidas de concentración en muestras de **ferricianuro de potasio** a diferentes concentraciones de un buffer de **cloruro de potasio**. Os hemos dejado ciertos links para poder profundizar en estos compuestos químicos. Estas mediciones electroquímicas están basadas en los 2 tipos previamente descritos: la cronoamperometría y la voltametría cíclica. 
+El objetivo del proyecto es la obtención de medidas de concentración en muestras de **ferricianuro de potasio** a diferentes concentraciones en un buffer de **cloruro de potasio**. Os hemos dejado ciertos links para poder profundizar en estos compuestos químicos. Estas mediciones electroquímicas están basadas en los 2 tipos previamente descritos: la cronoamperometría y la voltametría cíclica. 
 
 Por lo tanto, los objetivos se pueden resumir en los siguientes puntos: 
 
@@ -80,13 +91,15 @@ Por lo tanto, los objetivos se pueden resumir en los siguientes puntos:
 - Realizar una medición mediante una voltametría cíclica.
 - Realizar una medición mediante una cronoamperometría. 
 - Controlar la unidad de alimentación, *power management unit* (PMU) del módulo del *front-end.* 
-- Comunicarse con la aplicación **viSens-S** mediante el protocolo **MASB-COMM-S**.
+- Comunicarse con la aplicación **viSens-S** mediante el protocolo [**MASB-COMM-S**](https://github.com/Biomedical-Electronics/masb-pot-s-blaugrana/blob/master/Docs/protocolo-de-comunicacion.md).
 
-Además, ciertos requerimientos específicos tienen que ser cumplidos para la correcta implementación. Por lo que corresponde a la PMU, esta debe ser iniciada al inicio de la medición y no volverse a deshabilitar. Por otra parte, la comunicación debe ser realizada con el host mediante una **comunicación asíncrona con configuración 115200 8N1**. Los tipos de configuración así como sus parámetros y significado, se pueden encontrar en este enlace. La codificación de la información debe también ser realizada en **COBS**, donde el carácter 0x00 implica la finalización del mensaje a enviar. Por lo que corresponde al microcontrolador y su función, este debe actuar de esclavo del master, y atender a las instrucciones sobre las mediciones a realizar reflejados en el protocolo MASB-COMM-S. También, en el momento en el que se envíe la instrucción correspondiente, el microcontrolador debe iniciar la medición. 
+Además, ciertos requerimientos específicos tienen que ser cumplidos para la correcta implementación. Por lo que corresponde a la PMU, esta debe ser iniciada al inicio de la medición y no volverse a deshabilitar. Por otra parte, la comunicación debe ser realizada con el host mediante una **comunicación asíncrona con configuración 115200 8N1**. Los tipos de configuración así como sus parámetros y significado, se pueden encontrar en este enlace. La codificación de la información debe también ser realizada en **COBS**, donde el carácter 0x00 implica la finalización del mensaje a enviar. Por lo que corresponde al microcontrolador y su función, este debe actuar de esclavo del master, y atender a las instrucciones sobre las mediciones a realizar reflejados en el protocolo [MASB-COMM-S](https://github.com/Biomedical-Electronics/masb-pot-s-blaugrana/blob/master/Docs/protocolo-de-comunicacion.md). También, en el momento en el que se envíe la instrucción correspondiente, el microcontrolador debe iniciar la medición. 
 
 Otro aspecto a tener en cuenta hace referencia a cuando una medición no se este realizando. En ese caso, el relé del circuito del *front-end* que conecta al *Counter Electrode* (CE) debe quedar abierto. 
 
 En cuanto a la programación en el entorno de STM en específico, esta se ha realizado de tal forma para que 2 funciones setup y loop sean creadas con el objetivo de simplificar el código y así liberar el fichero principal de ejecución `main.c`
+
+
 
 ## Software y hardware
 
@@ -97,6 +110,8 @@ Por lo que respecta al microcontrolador, su programación es de crucial importan
 La placa STM tiene incorporados ciertos periféricos, los cuales han sido usados para la realización de este proyecto. Son el caso del periférico `USART`, para la comunicación con el *host* (la aplicación *viSens-S*), y de I2C para la comunicación con el DAC del *front-end* a la hora de establecer su tensión de salida y polarizar la celda. También cabe destacar el uso de salidas digitales para abrir/cerrar el relé así como para activar la PMU. Finalmente, el uso del ADC del microcontrolador toma un papel protagonista a la hora de leer la tensión y determinar la corriente de la celda. 
 
 El proyecto también gira alrededor de la aplicación de escritorio *viSens-S* (que se puede encontrar en este enlace). Su función es la de enviar las instrucciones pertinentes para realizar las medidas, así como el recibo de los datos y su correspondiente visualización. Aquí podéis encontrar un vídeo en el que se muestra la aplicación en más en detalle. Ya que las pruebas no se han podido realizar de forma directa en la celda, el uso de un potenciómetro en la placa ha sido clave para poder determinar el correcto funcionamiento de la comunicación implementada y la toma de medidas. Mediante su divisor de tensión y la conexión de su terminal variable a la entrada analógica del microcontrolador, se ha podido ir comprobando el correcto funcionamiento del sistema. 
+
+
 
 ## Módulos del *front-end*
 
@@ -154,9 +169,12 @@ Un sistema de control de versiones es una herramienta que nos permite colaborar 
 Para trabajar de forma más organizada y no sobrescribir los archivos, es común crear versiones separadas del código (llamadas **ramas** en Git) y después fusionarla con la versión **maestra** cuando hayamos terminado de editarla. Si observamos la siguiente imagen, los nuevos cambios se probarían en las ramas `feature`y, una vez confirmada su validez, serían añadidos a la rama `develop` y, finalmente, a la rama `master`. 
 
 <p align="center">
-   <img src="assets/imgs/branches.jpg" alt="Branches" width="350" /> 
+   <img src="assets/imgs/branches.JPG" alt="Branches" width="350" /> 
+
 
 > **Figura 3:** Ejemplo de ramas de desarrollo en un proyecto de Git. 
+
+
 
 Una opción comúnmente escogida, es que cada desarrollador cree su propia rama y edite el proyecto general desde esta. En el caso de nuestro proyecto, las distintas ramas han sido creadas según su funcionalidad, es decir, se creó una rama para la cronoamperometría, una rama para la voltametría cíclica, una rama para la comunicación ADC, etc. A continuación, vamos a proceder a describir cada una de estas ramas: 
 
@@ -182,7 +200,7 @@ Aún así, antes de ello, hablaremos de cómo conectar el potenciostato a la pla
    <img src="assets/imgs/stm32.png" alt="EVB" width="300" /> 
    <img src="assets/imgs/pinout.png" alt="Pinout" width="300" /> 
 
-> ​    **Figura 4**: STM-32 Núcleo 64 (izquierda) y sus entradas y salidas o *pinout* (derecha).
+>  **Figura 4**: STM-32 Núcleo 64 (izquierda) y sus entradas y salidas o *pinout* (derecha).
 
 
 
@@ -239,11 +257,11 @@ En referencia a la aplicación de escritorio así como el envío inicial de inst
 <p align="center">
    <img src="assets/imgs/visense_flow.jpg" alt="viSense Flow Diagram" width="600" /> 
 
-> **Figura 5:** Diagrama de flujo de ...
+> **Figura 5:** Diagrama de flujo del programa viSens-S
 
 
 
-Para la implementación del flujo de trabajo representado, la comunicación asíncrona mediante **USART** así como la codificación **COBS** y el protocolo MASB-COMM-S entre el dispositivo y la aplicación de escritorio es esencial. Por esta razón, los archivos `cobs.c` y `masb_comm_s.c` realizan esta función. El primero se encarga de la codificación/decodificación de la información, mientras que el segundo, por su lado, configura la comunicación asíncrona, el recibimiento/lectura de instrucciones de medición para almacenar sus parámetros en las debidas estructuras (mediante uniones), así como la transmisión de los datos sensados. Cabe destacar que estas funcionalidades ya se encontraban hechas en prácticas anteriores de la asignatura. La toma de medidas dependiendo de su técnica será expuesta de forma detallada a continuación. 
+Para la implementación del flujo de trabajo representado, la comunicación asíncrona mediante **USART** así como la codificación **COBS** y el protocolo [MASB-COMM-S](https://github.com/Biomedical-Electronics/masb-pot-s-blaugrana/blob/master/Docs/protocolo-de-comunicacion.md) entre el dispositivo y la aplicación de escritorio es esencial. Por esta razón, los archivos `cobs.c` y `masb_comm_s.c` realizan esta función. El primero se encarga de la codificación/decodificación de la información, mientras que el segundo, por su lado, configura la comunicación asíncrona, el recibimiento/lectura de instrucciones de medición para almacenar sus parámetros en las debidas estructuras (mediante uniones), así como la transmisión de los datos sensados. Cabe destacar que estas funcionalidades ya se encontraban hechas en prácticas anteriores de la asignatura. La toma de medidas dependiendo de su técnica será expuesta de forma detallada a continuación. 
 
 #### Cronoamperometría
 
@@ -252,7 +270,7 @@ De forma general, la funcionalidad de la cronoamperometría puede ser representa
 <p align="center">
    <img src="assets/imgs/CA_flow.jpg" alt="CA Flow Diagram" width="400" /> 
 
-> **Figura 5:** Diagrama de flujo de la Cronoamperometría (CA).
+> **Figura 6:** Diagrama de flujo de la Cronoamperometría (CA).
 
 
 
@@ -274,5 +292,152 @@ La funcionalidad de la voltametría se encuentra resumida en el diagrama de fluj
 
 <p align="center">
    <img src="assets/imgs/CV_flow.jpg" alt="CV Flow Diagram" width="700" /> 
+> **Figura 7:** Diagrama de flujo de la voltametría cíclica
 
-Primero de todo, la obtención de las instrucciones de la medición: voltaje a fijar (eBegin), los distintos vértices de la señal de voltaje, los ciclos a realizar, así como el scanRate (la variación de la tensión en la celda con el tiempo) y el eStep (incrementeo/decremento entre distintos puntos consecutivos). Posteriormente mediante la siguiente formula del periodo de sampleo se determina, para ser introducida en la función **ClockSettings()** previamente comentada para realizar las pertinentes mediciones. El programa se ejecuta siempre y cuando los ciclos a realizar no hayan finalizado (es decir, siempre que los ciclos>0) y cada vez que salte la interrupción dado el periodo de sampleo. Primero se determina si el voltaje ha llegado a uno de los vértices, de ser así, el siguiente objetivo de la señal voltaje a enviar a la celda es el vértice consecutivo. De no haberse llegado al vértice objetivo, un cierto decremento o incremento (dependiendo en qué vértice nos encontremos) es aplicado a la señal voltaje enviada a la celda hasta llegarse a dicho objetivo. En caso de llegarse y pasarse de este, el propio objetivo es aplicado a la celda. Cabe destacar que en este flujo se considera siempre que eVertex2<eBegin<eVertex1 para realizar los pertinentes incrementos y decrementos, por lo tanto distinta configuración a esta no resultaría en buenas medidas. Finalmente, al acabar la medida el relé se abre. Igual que con la cronoamperometría, el estado mientras se realizan las mediciones se define como CV, para que cuando salte la interrupción las pertinentes mediciones de esta técnica se den. Esto se verá en más detalle a continuación con la implementación en el fichero **stm32main.** 
+
+
+Primero de todo, la obtención de las instrucciones de la medición: voltaje a fijar (`eBegin`), los distintos vértices de la señal de voltaje, los ciclos a realizar, así como el `scanRate` (la variación de la tensión en la celda con el tiempo) y el `eStep` (incremento/decremento entre distintos puntos consecutivos). Posteriormente mediante la siguiente formula del periodo de sampleo se determina, para ser introducida en la función **ClockSettings()** previamente comentada para realizar las pertinentes mediciones. El programa se ejecuta siempre y cuando los ciclos a realizar no hayan finalizado (es decir, siempre que los ciclos>0) y cada vez que salte la interrupción dado el periodo de sampleo. Primero se determina si el voltaje ha llegado a uno de los vértices, de ser así, el siguiente objetivo de la señal voltaje a enviar a la celda es el vértice consecutivo. De no haberse llegado al vértice objetivo, un cierto decremento o incremento (dependiendo en qué vértice nos encontremos) es aplicado a la señal voltaje enviada a la celda hasta llegarse a dicho objetivo. En caso de llegarse y pasarse de este, el propio objetivo es aplicado a la celda. Cabe destacar que en este flujo se considera siempre que eVertex2 < eBegin < eVertex1 para realizar los pertinentes incrementos y decrementos, por lo tanto distinta configuración a esta no resultaría en buenas medidas. Finalmente, al acabar la medida el relé se abre. Igual que con la cronoamperometría, el estado mientras se realizan las mediciones se define como CV, para que cuando salte la interrupción las pertinentes mediciones de esta técnica se den. Esto se verá en más detalle a continuación con la implementación en el fichero **stm32main.** 
+
+
+
+#### Microcontrolador
+
+En el fichero `stm32main` se encuentra el funcionamiento del microcontrolador para determinar, según la instrucción recibida, la medición con la técnica correspondiente. Primero de todo, los periféricos son iniciados (tales como la comunicación I2C) así como las salidas GPIO para poder configurar los módulos del *front-end* como la PMU. El DAC también se configura (el cual tiene una función generada en el fichero `dac`: **setup_DAC () )** así como el potenciómetro para determinar el valor de su resistencia. Finalmente, el microcontrolador se mantiene a la espera de recibir una instrucción por parte del host. 
+
+Según el comando recibido del protocolo de comunicación MASB-COMM-S, la medición correspondiente se realiza. Primero de todo, los parámetros de la medición son extraídos para ser guardados en las correspondientes estructuras, para, finalmente, ejecutar el flujo de cada medición. Por cada técnica, el estado CA para la cronoamperometría así como CV para la voltametría cíclica se definen. Estos son usados en la interrupción del timer, en la cual se determina en qué estado se encuentra la medición y la realiza para ser enviada al host. Además, el count es incrementado cada vez que una medida es tomada para así numerar los puntos. De esta forma se va realizando la técnica correspondiente hasta que ésta finalice y otra sea recibida. 
+
+
+
+<p align="center">
+   <img src="assets/imgs/micro_flow.jpg" alt="Microcontroller Flow Diagram" width="700" /> 
+
+> **Figura 8:** Diagrama de flujo del microcontrolador
+
+
+
+## Resultados
+
+Ya realizada la implementación de todo el programario, era hora de saber su funcionamiento real. 
+
+### Tests iniciales
+
+Antes de todo, se testeó con el circuito representado en la figura siguiente: 
+
+<p align="center">
+   <img src="assets/imgs/circuit.jpg" alt="Potentiostat Circuit" width="400" /> 
+
+> **Figura 9:** Circuito eléctrico del potenciostato. 
+
+
+
+Tanto la cronoamperometría como la voltametría cíclica demostraron realizar unas medidas correspondientes a lo esperado. Los resultados para este primera prueba se pueden ver a continuación: 
+
+###### Cronoamperometría
+
+<p align="center">
+   <img src="assets/imgs/initialCA.jpg" alt="Tests de cronoamperometría" width="400" /> 
+
+> **Figura 10**: Pruebas iniciales con la cronoamperometría. 
+
+###### Voltametría Cíclica
+
+<p align="center">
+   <img src="assets/imgs/initialCV.jpg" alt="Test de Voltametría cíclica" width="400" /> 
+
+> **Figura 11**: Pruebas iniciales con la cronoamperometría. 
+
+### Prueba final
+
+Sin embargo, el objetivo final del proyecto es poder realizar las distintas técnicas para realizar mediciones en muestras de **ferricianuro de potasio** a diferentes concentraciones en un **buffer de cloruro de potasio.** Específicamente, **1 mM y 5 mM** fueron usados para las pruebas. 
+
+<p align="center">
+   <img src="assets/imgs/sensor.jpg" alt="Sensor" width="300" /> 
+
+> **Figura 12:** Fotografía del microcontrolador durante la medición de la CA y la CV. 
+
+En la figura superior se puede observar la placa del microcontrolador juntamente acoplada con el chip donde se depositan las muestras para poder ser medidas con la implementación realizada. 
+Los resultados obtenidos en **viSens-S** con respecto a los parámetros definidos en cronoamperometría fueron los siguientes, tanto para 1mM cómo 5mM. 
+
+###### Cronoamperometría
+
+|      Parámetros      | Valor |
+| :------------------: | :---: |
+|       E DC (V)       | 0,15  |
+| Sampling period (ms) |  20   |
+| Measurement time (s) |  10   |
+
+> **Tabla 1:** Parámetros iniciales para el gráfico de la CA.
+
+<p align="center">
+   <img src="assets/imgs/final_CA_1.jpg" alt="Prueba final de la cronoamperometría" width="600" /> 
+
+> **Figura 13 :** Gráficos finales de la cronoamperometría para diferentes concentraciones del *buffer* de cloruro de potasio. A la izquierda, una concentración de 1mM, a la derecha, una concentración de 5mM.  
+
+
+
+Para observar de forma más visual sus diferencias (dadas las distintas concentraciones usadas), se han superpuesto las dos gráficas: 
+
+<p align="center">
+   <img src="assets/imgs/excel_CA.jpg" alt="Gráfico de la CA" width="400" /> 
+
+> **Figura 14 :** Gráfico *excel* con los datos obtenidos de la CA. En azul, la solución de ferricianuro de potasio con un tampón de 1mM, en naranja, de 5mM. 
+
+
+
+En la gráfica superior puede observarse el distinto comportamiento dados los mismos parámetros de medición en caso de tener distintas concentraciones en la muestra. 
+
+
+
+
+
+###### Voltametría Cíclica
+
+De la misma forma, se realizaron las medidas con la voltametría cíclica, obteniendo los siguiente resultados con la aplicación viSens-s: 
+
+|   Parámetros    | Valor |
+| :-------------: | :---: |
+|   E begin (V)   |  0,7  |
+| E vertex 1 (V)  |  0,8  |
+| E vertex 2 (V)  | -0,1  |
+|     Cycles      |   4   |
+| Scan rate (V/s) |  0,1  |
+|   E step (V)    | 0,01  |
+
+> **Tabla 2:** Parámetros iniciales para el gráfico de la VC.
+
+
+
+<p align="center">
+   <img src="assets/imgs/final_CV.jpg" alt="Prueba final de Voltametría cíclica" width="600" /> 
+
+> **Figura 15 :** Gráficos finales de la voltametría para diferentes concentraciones del *buffer* de cloruro de potasio. A la izquierda, una concentración de 1mM, a la derecha, una concentración de 5mM.  
+
+Otra vez, para poder determinar las diferencias de forma clara con las distintas concentraciones, se han superpuesto las gráficas: 
+
+
+<p align="center">
+   <img src="assets/imgs/excel_CV.jpg" alt="Gráfico de VC" width="400" /> 
+
+> **Figura 16 :** Gráfico *excel* con los datos obtenidos de la VC. En azul, la solución de ferricianuro de potasio con un tampón de 1mM, en naranja, de 5mM. 
+
+
+
+Dados estos resultados, se puede confirmar el buen funcionamiento del microcontrolador y su comunicación para poder realizar las dos técnicas electroquímicas. 
+
+
+
+## Conclusiones
+
+
+
+## Bibliografía
+
+[1] https://upcommons.upc.edu/bitstream/handle/2099.1/4861/06_Annexos.pdf?sequence=7&isAllowed=yhttps://es.xcv.wiki/wiki/Chronoamperometry 
+
+[2] https://es.xcv.wiki/wiki/Chronoamperometry
+
+[3] https://www.cio.mx/invest_13/gpom/archivos/Taller%20_CaracterizacionEQ_sesion2.pdf 
+
+
+
+ 
