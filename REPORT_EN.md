@@ -2,7 +2,7 @@
 
 <img align="left" src="https://img.shields.io/badge/Entorno de desarrollo-STM32CubeIDE-blue">
 
-This project has been developed in the subject of **Microcontrollers for Biomedical Applications and Systems**, from the Biomedical Engineering Degree at the University of Barcelona (UB). It has been carried out by the **BlauGrana** group, formed by Julia meca (left) and Raimon Casamitjana (right), and with the help of our professor Albert Álvarez, to whom we are very grateful. :yum: 
+This project has been developed in the subject of **Microcontrollers for Biomedical Applications and Systems**, from the Biomedical Engineering Degree at the University of Barcelona (UB). It has been carried out by the **BlauGrana** group, formed by Julia Meca (left) and Raimon Casamitjana (right), and with the help of our professor Albert Álvarez, to whom we are very grateful. :yum: 
 
 <p align="center">
    <img src="assets/imgs/julia.jpg" alt="Julia" width="250" /> 
