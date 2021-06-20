@@ -1,6 +1,6 @@
 # Final Project Microcontrollers - Configuration of a potentiostat
 
-<img align="left" src="https://img.shields.io/badge/Entorno de desarrollo-STM32CubeIDE-blue">
+<img align="left" src="https://img.shields.io/badge/Entorno de desarrollo-STM32CubeIDE-blue"></br>
 
 This project has been developed in the subject of **Microcontrollers for Biomedical Applications and Systems**, from the Biomedical Engineering Degree at the University of Barcelona (UB). It has been carried out by the **BlauGrana** group, formed by Julia Meca (left) and Raimon Casamitjana (right), and with the help of our professor Albert Álvarez, to whom we are very grateful. :yum: 
 
